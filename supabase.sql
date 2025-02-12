@@ -16,7 +16,7 @@ CREATE TABLE teams (
 
 -- Events table to store competition events
 CREATE TABLE events (
-    event_id VARCHAR(20) PRIMARY KEY, -- FTCScout format e.g., USANOCASCQ1
+    event_id VARCHAR(20) PRIMARY KEY, -- FTCScout format
     event_name VARCHAR(255) NOT NULL,
     event_location VARCHAR(255) NOT NULL,
     event_date DATE NOT NULL,
@@ -97,7 +97,7 @@ CREATE TABLE match_performances (
     UNIQUE(match_id, team_id)
 );
 
--- Team statistics across events (updated via triggers or application logic)
+-- Team statistics across events
 CREATE TABLE team_statistics (
     team_id INTEGER REFERENCES teams(team_id),
     event_id VARCHAR(20) REFERENCES events(event_id),
@@ -105,9 +105,10 @@ CREATE TABLE team_statistics (
     average_auton_points DECIMAL(10,2) DEFAULT 0,
     average_teleop_points DECIMAL(10,2) DEFAULT 0,
     average_endgame_points DECIMAL(10,2) DEFAULT 0,
-    parking_success_rate DECIMAL(5,2) DEFAULT 0,
-    specimen_success_rate DECIMAL(5,2) DEFAULT 0,
-    sample_success_rate DECIMAL(5,2) DEFAULT 0,
+    average_low_basket_samples DECIMAL(10,2) DEFAULT 0,
+    average_high_basket_samples DECIMAL(10,2) DEFAULT 0,
+    average_low_chamber_specimens DECIMAL(10,2) DEFAULT 0,
+    average_high_chamber_specimens DECIMAL(10,2) DEFAULT 0,
     PRIMARY KEY (team_id, event_id),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
@@ -162,3 +163,97 @@ CREATE INDEX idx_match_performances_match_id ON match_performances(match_id);
 CREATE INDEX idx_match_performances_team_id ON match_performances(team_id);
 CREATE INDEX idx_team_statistics_team_id ON team_statistics(team_id);
 CREATE INDEX idx_team_statistics_event_id ON team_statistics(event_id);
+
+CREATE POLICY "Enable insert for authenticated users only"
+ON "public"."event_team_metadata"
+TO authenticated
+WITH CHECK (
+    true
+);
+CREATE POLICY "Enable insert for authenticated users only"
+ON "public"."events"
+TO authenticated
+WITH CHECK (
+    true
+);
+CREATE POLICY "Enable insert for authenticated users only"
+ON "public"."match_alliances"
+TO authenticated
+WITH CHECK (
+    true
+);
+CREATE POLICY "Enable insert for authenticated users only"
+ON "public"."match_performances"
+TO authenticated
+WITH CHECK (
+    true
+);
+CREATE POLICY "Enable insert for authenticated users only"
+ON "public"."matches"
+TO authenticated
+WITH CHECK (
+    true
+);
+CREATE POLICY "Enable insert for authenticated users only"
+ON "public"."team_statistics"
+TO authenticated
+WITH CHECK (
+    true
+);
+CREATE POLICY "Enable insert for authenticated users only"
+ON "public"."teams"
+TO authenticated
+WITH CHECK (
+    true
+);
+
+CREATE POLICY "Enable read access for all users"
+ON "public"."event_team_metadata"
+TO public
+USING (
+    true
+);
+CREATE POLICY "Enable read access for all users"
+ON "public"."events"
+TO public
+USING (
+    true
+);
+CREATE POLICY "Enable read access for all users"
+ON "public"."match_alliances"
+TO public
+USING (
+    true
+);
+CREATE POLICY "Enable read access for all users"
+ON "public"."match_performances"
+TO public
+USING (
+    true
+);
+CREATE POLICY "Enable read access for all users"
+ON "public"."matches"
+TO public
+USING (
+    true
+);
+CREATE POLICY "Enable read access for all users"
+ON "public"."team_statistics"
+TO public
+USING (
+    true
+);
+CREATE POLICY "Enable read access for all users"
+ON "public"."teams"
+TO public
+USING (
+    true
+);
+
+ALTER TABLE "event_team_metadata" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "events" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "match_alliances" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "match_performances" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "matches" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "team_statistics" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "teams" ENABLE ROW LEVEL SECURITY;
