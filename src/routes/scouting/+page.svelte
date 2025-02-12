@@ -2,6 +2,13 @@
   import * as Dialog from "$lib/components/ui/dialog/index.js";
   import * as Select from "$lib/components/ui/select/index.js";
   import { buttonVariants } from "$lib/components/ui/button/index.js";
+  import EventForm from "./EventForm.svelte";
+  import type { PageData } from "./$types.js";
+
+  let { data }: { data: PageData } = $props();
+
+  // update selector to show selected value
+  let selectedEvent = $state("");
 </script>
 
 <div>
@@ -10,27 +17,34 @@
     <a href="/" class="font-bold">QUIXCOUT</a>
   </div>
 
-  <!-- Event Picker -->
   <div class="flex flex-col mt-2">
     <div class="flex flex-row justify-center">
       <div>Event</div>
     </div>
     <div class="flex flex-row justify-center mt-2 gap-2">
-      <Select.Root type="single">
-        <Select.Trigger class="w-[180px]"></Select.Trigger>
+      <!-- Event Picker -->
+      <Select.Root type="single" bind:value={selectedEvent}>
+        <Select.Trigger class="w-[180px] truncate">{selectedEvent}</Select.Trigger>
         <Select.Content>
-          <Select.Item value="event1">Event 1</Select.Item>
-          <Select.Item value="event2">Event 2</Select.Item>
+          {#each data.events as event}
+            <Select.Item value={event.event_name}
+              >{event.event_name}</Select.Item
+            >
+          {/each}
         </Select.Content>
       </Select.Root>
+
+      <!-- Add New Event -->
       <Dialog.Root>
         <Dialog.Trigger class={buttonVariants({ variant: "outline" })}>
           Add
         </Dialog.Trigger>
         <Dialog.Content>
           <Dialog.Title>Add Event</Dialog.Title>
-          <Dialog.Description>Add a new event</Dialog.Description>
-          <Dialog.Close>Close</Dialog.Close>
+          <Dialog.Description
+            >Add new events with the FTCScout event code</Dialog.Description
+          >
+          <EventForm {data} />
         </Dialog.Content>
       </Dialog.Root>
     </div>
