@@ -1,7 +1,7 @@
 <script lang="ts">
   import * as Form from "$lib/components/ui/form/index.js";
   import { Input } from "$lib/components/ui/input/index.js";
-  import { formSchema, type FormSchema } from "./schema";
+  import { formSchema, type LoginFormSchema } from "./schema";
   import {
     type SuperValidated,
     type Infer,
@@ -9,7 +9,7 @@
   } from "sveltekit-superforms";
   import { zodClient } from "sveltekit-superforms/adapters";
   
-  let { data }: { data: { form: SuperValidated<Infer<FormSchema>> } } =
+  let { data }: { data: { form: SuperValidated<Infer<LoginFormSchema>> } } =
       $props();
   
   const form = superForm(data.form, {

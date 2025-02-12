@@ -20,4 +20,4 @@ export const formSchema = z.object({
  * TypeScript type generated from the schema.
  * Can be used for type-safe access to form data.
  */
-export type FormSchema = typeof formSchema;
+export type LoginFormSchema = typeof formSchema;
