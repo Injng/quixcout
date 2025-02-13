@@ -1,7 +1,7 @@
 <script lang="ts">
   import * as Form from "$lib/components/ui/form/index.js";
   import { Input } from "$lib/components/ui/input/index.js";
-  import { eventFormSchema, type EventFormSchema } from "./schema";
+  import { eventFormSchema, type EventFormSchema } from "../schema/schema";
   import {
     type SuperValidated,
     type Infer,

@@ -2,8 +2,8 @@ import type { PageServerLoad, Actions } from "./$types.js";
 import { fail } from "@sveltejs/kit";
 import { superValidate, setError } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
-import { eventFormSchema } from "./schema";
-import type { Team } from "./columns.js";
+import { eventFormSchema } from "./schema/schema.js";
+import type { Team } from "./schema/columns.js";
 
 export const load: PageServerLoad = async ({ url, locals: { supabase } }) => {
   const selectedEvent = url.searchParams.get("event");
