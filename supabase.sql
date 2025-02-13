@@ -73,6 +73,7 @@ CREATE TABLE match_alliances (
 CREATE TABLE match_performances (
     performance_id SERIAL PRIMARY KEY,
     match_id INTEGER REFERENCES matches(match_id),
+    event_id VARCHAR REFERENCES events(event_id),
     team_id INTEGER REFERENCES teams(team_id),
     -- Autonomous scoring
     auton_parking BOOLEAN DEFAULT FALSE,

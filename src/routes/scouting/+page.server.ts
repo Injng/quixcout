@@ -3,12 +3,72 @@ import { fail } from "@sveltejs/kit";
 import { superValidate, setError } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
 import { eventFormSchema } from "./schema";
+import type { Team } from "./columns.js";
 
-export const load: PageServerLoad = async ({ locals: { supabase } }) => {
-  let { data: events } = await supabase.from("events").select("event_name");
+export const load: PageServerLoad = async ({ url, locals: { supabase } }) => {
+  const selectedEvent = url.searchParams.get("event");
+  let team_data: Team[] = [];
+  if (selectedEvent != null) {
+    // get team statistics for event
+    let { data: teams } = await supabase
+      .from("team_statistics")
+      .select("*")
+      .eq("event_id", selectedEvent);
+    teams = teams ?? [];
+
+    // populate team data with statistics
+    for (const team of teams) {
+      // get team name
+      let { data: teamData } = await supabase
+        .from("teams")
+        .select("team_name")
+        .eq("team_id", team.team_id);
+      teamData = teamData ?? [];
+      const teamName = teamData[0].team_name as string;
+
+      // count number of matches played
+      let { data: matches } = await supabase
+        .from("match_performances")
+        .select("match_id")
+        .eq("team_id", team.team_id)
+        .eq("event_id", selectedEvent);
+      matches = matches ?? [];
+      const matchesPlayed = matches.length;
+
+      // get other fields from table
+      const teamNumber = team.team_id;
+      const avgAutonPoints = team.average_auton_points;
+      const avgTeleopPoints = team.average_teleop_points;
+      const avgEndgamePoints = team.average_endgame_points;
+      const avgLowSamples = team.average_low_basket_samples;
+      const avgHighSamples = team.average_high_basket_samples;
+      const avgLowSpecimens = team.average_low_chamber_specimens;
+      const avgHighSpecimens = team.average_high_chamber_specimens;
+
+      // create the team object
+      team_data.push({
+        teamNumber,
+        teamName: teamName,
+        matchesPlayed,
+        autonAverage: avgAutonPoints,
+        teleopAverage: avgTeleopPoints,
+        endgameAverage: avgEndgamePoints,
+        lowSampleAverage: avgLowSamples,
+        highSampleAverage: avgHighSamples,
+        lowSpecimenAverage: avgLowSpecimens,
+        highSpecimenAverage: avgHighSpecimens,
+      });
+    }
+  }
+
+  let { data: events } = await supabase
+    .from("events")
+    .select("event_name,event_id");
+
   return {
     form: await superValidate(zod(eventFormSchema)),
     events: events ?? [],
+    team_data,
   };
 };
 

@@ -4,11 +4,21 @@
   import { buttonVariants } from "$lib/components/ui/button/index.js";
   import EventForm from "./EventForm.svelte";
   import type { PageData } from "./$types.js";
+  import { goto } from "$app/navigation";
+  import DataTable from "./DataTable.svelte";
+  import { columns } from "./columns";
 
   let { data }: { data: PageData } = $props();
 
   // update selector to show selected value
   let selectedEvent = $state("");
+
+  // watch for changes to the selected event and set url
+  $effect(() => {
+    if (selectedEvent) {
+      goto(`?event=${selectedEvent}`);
+    }
+  });
 </script>
 
 <div>
@@ -24,13 +34,17 @@
     <div class="flex flex-row justify-center mt-2 gap-2">
       <!-- Event Picker -->
       <Select.Root type="single" bind:value={selectedEvent}>
-        <Select.Trigger class="w-[180px] truncate">{selectedEvent}</Select.Trigger>
+        <Select.Trigger class="w-[180px] truncate"
+          >{selectedEvent}</Select.Trigger
+        >
         <Select.Content>
-          {#each data.events as event}
-            <Select.Item value={event.event_name}
-              >{event.event_name}</Select.Item
-            >
-          {/each}
+          {#if data.events}
+            {#each data.events as event}
+              <Select.Item value={event.event_id}
+                >{event.event_name}</Select.Item
+              >
+            {/each}
+          {/if}
         </Select.Content>
       </Select.Root>
 
@@ -44,9 +58,24 @@
           <Dialog.Description
             >Add new events with the FTCScout event code</Dialog.Description
           >
-          <EventForm {data} />
+          <EventForm
+            data={{
+              form: data.form ?? {
+                id: "",
+                valid: false,
+                posted: false,
+                errors: {},
+                data: { event: "" },
+              },
+            }}
+          />
         </Dialog.Content>
       </Dialog.Root>
     </div>
   </div>
+
+  <!-- Data Table -->
+   <div class="mt-2">
+  <DataTable data={data.team_data ?? []} {columns} />
+   </div> 
 </div>
