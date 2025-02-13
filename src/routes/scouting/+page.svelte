@@ -4,6 +4,7 @@
   import * as Tabs from "$lib/components/ui/tabs/index.js";
   import { buttonVariants } from "$lib/components/ui/button/index.js";
   import EventForm from "./components/EventForm.svelte";
+  import EndgameForm from "./components/EndgameForm.svelte";
   import type { PageData } from "./$types.js";
   import { goto } from "$app/navigation";
   import DataTable from "./components/DataTable.svelte";
@@ -118,6 +119,9 @@
         </Tabs.Content>
         <Tabs.Content value="teleop">
           <TeleOpForm data={{ form: data.teleopForm }} />
+        </Tabs.Content>
+        <Tabs.Content value="endgame">
+          <EndgameForm data={{ form: data.endgameForm}} />
         </Tabs.Content>
       </Tabs.Root>
     </div>
