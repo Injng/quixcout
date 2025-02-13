@@ -2,10 +2,7 @@
   import * as Form from "$lib/components/ui/form/index.js";
   import { Checkbox } from "$lib/components/ui/checkbox/index.js";
   import { Input } from "$lib/components/ui/input/index.js";
-  import {
-    autonSchema,
-    type AutonSchema,
-  } from "../schema/schema";
+  import { autonSchema, type AutonSchema } from "../schema/schema";
   import {
     type SuperValidated,
     type Infer,

@@ -121,7 +121,7 @@
           <TeleOpForm data={{ form: data.teleopForm }} />
         </Tabs.Content>
         <Tabs.Content value="endgame">
-          <EndgameForm data={{ form: data.endgameForm}} />
+          <EndgameForm data={{ form: data.endgameForm }} />
         </Tabs.Content>
       </Tabs.Root>
     </div>

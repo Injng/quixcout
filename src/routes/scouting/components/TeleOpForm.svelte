@@ -1,10 +1,7 @@
 <script lang="ts">
   import * as Form from "$lib/components/ui/form/index.js";
   import { Input } from "$lib/components/ui/input/index.js";
-  import {
-    teleopSchema,
-    type TeleopSchema,
-  } from "../schema/schema";
+  import { teleopSchema, type TeleopSchema } from "../schema/schema";
   import {
     type SuperValidated,
     type Infer,
