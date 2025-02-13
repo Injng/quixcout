@@ -16,6 +16,7 @@
   // watch for changes to the selected event and set url
   $effect(() => {
     if (selectedEvent) {
+      console.log(selectedEvent);
       goto(`?event=${selectedEvent}`);
     }
   });
@@ -23,8 +24,10 @@
 
 <div>
   <!-- Header -->
-  <div class="bg-slate-500 flex flex-row font-serif p-5 z-10">
-    <a href="/" class="font-bold">QUIXCOUT</a>
+  <div class="bg-black/60 text-white flex flex-row font-serif p-5 z-10 m-5">
+    <a href={`/scouting?event=${selectedEvent}`}>Dashboard</a>
+    <a href="/" class="font-bold grow text-center">QUIXCOUT</a>
+    <a href="/scouting/form">Scout</a>
   </div>
 
   <div class="flex flex-col mt-2">
