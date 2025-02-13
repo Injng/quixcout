@@ -10,6 +10,7 @@
   import { columns } from "./schema/columns";
   import MetadataForm from "./components/MetadataForm.svelte";
   import AutonForm from "./components/AutonForm.svelte";
+  import TeleOpForm from "./components/TeleOpForm.svelte";
 
   let { data }: { data: PageData } = $props();
 
@@ -114,6 +115,9 @@
         </Tabs.Content>
         <Tabs.Content value="auton">
           <AutonForm data={{ form: data.autonForm }} />
+        </Tabs.Content>
+        <Tabs.Content value="teleop">
+          <TeleOpForm data={{ form: data.teleopForm }} />
         </Tabs.Content>
       </Tabs.Root>
     </div>
