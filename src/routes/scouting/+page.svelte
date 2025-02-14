@@ -1,5 +1,6 @@
 <script lang="ts">
   import * as Dialog from "$lib/components/ui/dialog/index.js";
+  import * as Form from "$lib/components/ui/form/index.js";
   import * as Select from "$lib/components/ui/select/index.js";
   import * as Tabs from "$lib/components/ui/tabs/index.js";
   import { buttonVariants } from "$lib/components/ui/button/index.js";
@@ -12,21 +13,29 @@
   import MetadataForm from "./components/MetadataForm.svelte";
   import AutonForm from "./components/AutonForm.svelte";
   import TeleOpForm from "./components/TeleOpForm.svelte";
-  import FormButton from "$lib/components/ui/form/form-button.svelte";
   import { scoutingSchema } from "./schema/schema";
   import { superForm } from "sveltekit-superforms";
   import { zodClient } from "sveltekit-superforms/adapters";
+  import { toast } from "svelte-sonner";
+  import { page } from '$app/state';
 
   let { data }: { data: PageData } = $props();
 
   // setup form data
   const form = superForm(data.scoutingForm, {
     validators: zodClient(scoutingSchema),
+    onUpdated({ form }) {
+      if (form.valid && form.message?.alertType == "success") {
+        toast.success("Submit successful!");
+      } else {
+        toast.error("Submit failed!");
+      }
+    }
   });
   const { form: formData, enhance } = form;
 
   // update selector to show selected value
-  let selectedEvent = $state("");
+  let selectedEvent = $state(page.url.searchParams.get("event") ?? "");
 
   // watch for changes to the selected event and set url
   $effect(() => {
@@ -38,9 +47,6 @@
   // state to track what the page is showing
   // 0 = data table, 1 = scouting forms
   let pageState = $state(0);
-  $effect(() => {
-    console.log(pageState);
-  });
 </script>
 
 <div>
@@ -114,6 +120,7 @@
   {:else if pageState == 1}
     <!-- Scouting Form Tabs -->
     <form method="POST" action="?/scouting" use:enhance>
+      <input type="hidden" name="event_id" value={selectedEvent} />
       <div class="flex justify-center mt-2 mb-2">
         <Tabs.Root value="team" class="w-[400px]">
           <Tabs.List class="grid w-full grid-cols-4">
@@ -123,7 +130,7 @@
             <Tabs.Trigger value="endgame">Endgame</Tabs.Trigger>
           </Tabs.List>
           <Tabs.Content value="team">
-            <MetadataForm {form} {formData} />
+            <MetadataForm {form} {formData} teams={data.team_data} />
           </Tabs.Content>
           <Tabs.Content value="auton">
             <AutonForm {form} {formData} />
@@ -137,7 +144,10 @@
         </Tabs.Root>
       </div>
       <div class="flex justify-center mb-2">
-        <FormButton class="mt-5">Submit All</FormButton>
+        <button
+          class="ring-offset-background focus-visible:ring-ring inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 mt-5"
+          type="submit">Submit All</button
+        >
       </div>
     </form>
   {/if}

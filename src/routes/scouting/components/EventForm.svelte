@@ -8,14 +8,14 @@
     superForm,
   } from "sveltekit-superforms";
   import { zodClient } from "sveltekit-superforms/adapters";
-  
+
   let { data }: { data: { form: SuperValidated<Infer<EventFormSchema>> } } =
-      $props();
-  
+    $props();
+
   const form = superForm(data.form, {
     validators: zodClient(eventFormSchema),
   });
-  
+
   const { form: formData, enhance } = form;
 </script>
 
@@ -23,8 +23,8 @@
   <Form.Field {form} name="event">
     <Form.Control>
       {#snippet children({ props })}
-      <Form.Label>Event Code</Form.Label>
-      <Input {...props} bind:value={$formData.event} />
+        <Form.Label>Event Code</Form.Label>
+        <Input {...props} bind:value={$formData.event} />
       {/snippet}
     </Form.Control>
     <Form.FieldErrors />

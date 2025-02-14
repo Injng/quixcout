@@ -14,10 +14,10 @@
 
 <Form.Field {form} name="endgame_location">
   <Form.Control>
-    {#snippet children()}
+    {#snippet children({ props })}
       <Form.Label>Endgame Location</Form.Label>
-      <Select.Root type="single" bind:value={$formData.endgame_location}>
-        <Select.Trigger class="w-[180px] truncate"
+      <Select.Root type="single" name={props.name} bind:value={$formData.endgame_location}>
+        <Select.Trigger { ...props } class="w-[180px] truncate"
           >{$formData.endgame_location}</Select.Trigger
         >
         <Select.Content>
@@ -44,10 +44,10 @@
 
 <Form.Field {form} name="overall_performance">
   <Form.Control>
-    {#snippet children()}
+    {#snippet children({ props })}
       <Form.Label>Overall Performance</Form.Label>
-      <Select.Root type="single" bind:value={$formData.overall_performance}>
-        <Select.Trigger class="w-[180px] truncate"
+      <Select.Root type="single" name={props.name} bind:value={$formData.overall_performance}>
+        <Select.Trigger { ...props } class="w-[180px] truncate"
           >{$formData.overall_performance}</Select.Trigger
         >
         <Select.Content>

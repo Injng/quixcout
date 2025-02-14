@@ -7,10 +7,12 @@ export const eventFormSchema = z.object({
 export type EventFormSchema = typeof eventFormSchema;
 
 export const scoutingSchema = z.object({
-  match_id: z.number().int(),
-  team_id: z.number().int(),
+  event_id: z.string(),
+  match_num: z.number().int(),
+  alliance: z.enum(['red', 'blue']),
+  team_id: z.string(),
   pre_auton_park: z.boolean().default(false),
-  pre_auton_high_basket_sample: z.number().int().default(0),
+  pre_auton_high_basket_samples: z.number().int().default(0),
   pre_auton_high_chamber_specimen: z.number().int().default(0),
   pre_total_push_samples: z.number().int().default(0),
   pre_total_low_basket_samples: z.number().int().default(0),

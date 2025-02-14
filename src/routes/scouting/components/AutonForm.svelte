@@ -26,17 +26,21 @@
     {#snippet children({ props })}
       <Form.Label>Auton Push Samples</Form.Label>
       <div class="flex items-center">
-        <button type="button" onclick={() => $formData.auton_push_samples--}
-          >-</button
+        <button
+          type="button"
+          onclick={() => $formData.auton_push_samples--}
+          class="m-2">-</button
         >
         <Input
           {...props}
           bind:value={$formData.auton_push_samples}
-          readonly
+          type="number"
           class="text-center w-12 mx-2"
         />
-        <button type="button" onclick={() => $formData.auton_push_samples++}
-          >+</button
+        <button
+          type="button"
+          onclick={() => $formData.auton_push_samples++}
+          class="m-2">+</button
         >
       </div>
     {/snippet}
@@ -51,17 +55,19 @@
       <div class="flex items-center">
         <button
           type="button"
-          onclick={() => $formData.auton_low_basket_samples--}>-</button
+          onclick={() => $formData.auton_low_basket_samples--}
+          class="m-2">-</button
         >
         <Input
           {...props}
           bind:value={$formData.auton_low_basket_samples}
-          readonly
+          type="number"
           class="text-center w-12 mx-2"
         />
         <button
           type="button"
-          onclick={() => $formData.auton_low_basket_samples++}>+</button
+          onclick={() => $formData.auton_low_basket_samples++}
+          class="m-2">+</button
         >
       </div>
     {/snippet}
@@ -76,17 +82,19 @@
       <div class="flex items-center">
         <button
           type="button"
-          onclick={() => $formData.auton_high_basket_samples--}>-</button
+          onclick={() => $formData.auton_high_basket_samples--}
+          class="m-2">-</button
         >
         <Input
           {...props}
           bind:value={$formData.auton_high_basket_samples}
-          readonly
+          type="number"
           class="text-center w-12 mx-2"
         />
         <button
           type="button"
-          onclick={() => $formData.auton_high_basket_samples++}>+</button
+          onclick={() => $formData.auton_high_basket_samples++}
+          class="m-2">+</button
         >
       </div>
     {/snippet}
@@ -101,17 +109,19 @@
       <div class="flex items-center">
         <button
           type="button"
-          onclick={() => $formData.auton_low_chamber_specimen--}>-</button
+          onclick={() => $formData.auton_low_chamber_specimen--}
+          class="m-2">-</button
         >
         <Input
           {...props}
           bind:value={$formData.auton_low_chamber_specimen}
-          readonly
+          type="number"
           class="text-center w-12 mx-2"
         />
         <button
           type="button"
-          onclick={() => $formData.auton_low_chamber_specimen++}>+</button
+          onclick={() => $formData.auton_low_chamber_specimen++}
+          class="m-2">+</button
         >
       </div>
     {/snippet}
@@ -126,17 +136,19 @@
       <div class="flex items-center">
         <button
           type="button"
-          onclick={() => $formData.auton_high_chamber_specimen--}>-</button
+          onclick={() => $formData.auton_high_chamber_specimen--}
+          class="m-2">-</button
         >
         <Input
           {...props}
           bind:value={$formData.auton_high_chamber_specimen}
-          readonly
+          type="number"
           class="text-center w-12 mx-2"
         />
         <button
           type="button"
-          onclick={() => $formData.auton_high_chamber_specimen++}>+</button
+          onclick={() => $formData.auton_high_chamber_specimen++}
+          class="m-2">+</button
         >
       </div>
     {/snippet}

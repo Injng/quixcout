@@ -64,7 +64,6 @@ CREATE TABLE match_alliances (
     match_id INTEGER REFERENCES matches(match_id),
     team_id INTEGER REFERENCES teams(team_id),
     alliance_color VARCHAR(10) NOT NULL CHECK (alliance_color IN ('red', 'blue')),
-    alliance_position INTEGER NOT NULL CHECK (alliance_position IN (1, 2)), -- Each alliance has 2 teams
     PRIMARY KEY (match_id, team_id),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
