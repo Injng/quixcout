@@ -24,7 +24,20 @@
     <Form.Control>
       {#snippet children({ props })}
         <Form.Label>Total Push Samples</Form.Label>
-        <Input {...props} bind:value={$formData.total_push_samples} />
+        <div class="flex items-center">
+          <button type="button" onclick={() => $formData.total_push_samples--}
+            >-</button
+          >
+          <Input
+            {...props}
+            bind:value={$formData.total_push_samples}
+            readonly
+            class="text-center w-12 mx-2"
+          />
+          <button type="button" onclick={() => $formData.total_push_samples++}
+            >+</button
+          >
+        </div>
       {/snippet}
     </Form.Control>
     <Form.FieldErrors />
@@ -34,7 +47,20 @@
     <Form.Control>
       {#snippet children({ props })}
         <Form.Label>Total Low Basket Samples</Form.Label>
-        <Input {...props} bind:value={$formData.total_low_basket_samples} />
+        <div class="flex items-center">
+          <button type="button" onclick={() => $formData.total_low_basket_samples--}
+            >-</button
+          >
+          <Input
+            {...props}
+            bind:value={$formData.total_low_basket_samples}
+            readonly
+            class="text-center w-12 mx-2"
+          />
+          <button type="button" onclick={() => $formData.total_low_basket_samples++}
+            >+</button
+          >
+        </div>
       {/snippet}
     </Form.Control>
     <Form.FieldErrors />
@@ -44,7 +70,20 @@
     <Form.Control>
       {#snippet children({ props })}
         <Form.Label>Total High Basket Samples</Form.Label>
-        <Input {...props} bind:value={$formData.total_high_basket_samples} />
+        <div class="flex items-center">
+          <button type="button" onclick={() => $formData.total_high_basket_samples--}
+            >-</button
+          >
+          <Input
+            {...props}
+            bind:value={$formData.total_high_basket_samples}
+            readonly
+            class="text-center w-12 mx-2"
+          />
+          <button type="button" onclick={() => $formData.total_high_basket_samples++}
+            >+</button
+          >
+        </div>
       {/snippet}
     </Form.Control>
     <Form.FieldErrors />
@@ -54,7 +93,20 @@
     <Form.Control>
       {#snippet children({ props })}
         <Form.Label>Total Low Chamber Specimen</Form.Label>
-        <Input {...props} bind:value={$formData.total_low_chamber_specimen} />
+        <div class="flex items-center">
+          <button type="button" onclick={() => $formData.total_low_chamber_specimen--}
+            >-</button
+          >
+          <Input
+            {...props}
+            bind:value={$formData.total_low_chamber_specimen}
+            readonly
+            class="text-center w-12 mx-2"
+          />
+          <button type="button" onclick={() => $formData.total_low_chamber_specimen++}
+            >+</button
+          >
+        </div>
       {/snippet}
     </Form.Control>
     <Form.FieldErrors />
@@ -64,11 +116,22 @@
     <Form.Control>
       {#snippet children({ props })}
         <Form.Label>Total High Chamber Specimen</Form.Label>
-        <Input {...props} bind:value={$formData.total_high_chamber_specimen} />
+        <div class="flex items-center">
+          <button type="button" onclick={() => $formData.total_high_chamber_specimen--}
+            >-</button
+          >
+          <Input
+            {...props}
+            bind:value={$formData.total_high_chamber_specimen}
+            readonly
+            class="text-center w-12 mx-2"
+          />
+          <button type="button" onclick={() => $formData.total_high_chamber_specimen++}
+            >+</button
+          >
+        </div>
       {/snippet}
     </Form.Control>
     <Form.FieldErrors />
   </Form.Field>
-
-  <Form.Button class="mt-5">Save</Form.Button>
 </form>

@@ -235,6 +235,4 @@
     </Form.Control>
     <Form.FieldErrors />
   </Form.Field>
-
-  <Form.Button class="mt-5">Save</Form.Button>
 </form>
