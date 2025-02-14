@@ -8,19 +8,60 @@
   import type { FsSuperForm } from "formsnap";
   import { type Writable } from "svelte/store";
   import type { Team } from "../schema/columns";
+  import type { SupabaseClient } from "@supabase/supabase-js";
 
   let {
     form,
     formData,
     teams,
+    supabase,
+    event_id,
   }: {
     form: FsSuperForm<Infer<ScoutingSchema>>;
     formData: Writable<Infer<ScoutingSchema>>;
     teams: Team[];
+    supabase: SupabaseClient;
+    event_id: string;
   } = $props();
 
+  // fetch and populate team metadata when team_id changes
+  let filledId = "";
   $effect(() => {
-    console.log("team id: " + $formData.team_id);
+    (async () => {
+      console.log("filling metadata");
+      if (filledId !== $formData.team_id) {
+        const { data: metadata } = await supabase
+          .from("event_team_metadata")
+          .select("*")
+          .eq("team_id", $formData.team_id)
+          .eq("event_id", event_id)
+          .single();
+
+        if (metadata) {
+          $formData.pre_auton_park = metadata.auton_park;
+          $formData.pre_auton_high_basket_samples =
+            metadata.auton_high_basket_sample;
+          $formData.pre_auton_high_chamber_specimen =
+            metadata.auton_high_chamber_specimen;
+          $formData.pre_total_push_samples = metadata.total_push_samples;
+          $formData.pre_total_low_basket_samples =
+            metadata.total_low_basket_samples;
+          $formData.pre_total_high_basket_samples =
+            metadata.total_high_basket_samples;
+          $formData.pre_total_low_chamber_specimen =
+            metadata.total_low_chamber_specimen;
+          $formData.pre_total_high_chamber_specimen =
+            metadata.total_high_chamber_specimen;
+          $formData.pre_endgame_location = metadata.endgame_location;
+          $formData.consistent_at = metadata.consistent_at;
+          $formData.game_strategy = metadata.game_strategy;
+          $formData.specimen_strategy = metadata.specimen_strategy;
+          $formData.synergy = metadata.synergy;
+          $formData.pre_other_notes = metadata.other_notes;
+          filledId = $formData.team_id;
+        }
+      }
+    })();
   });
 </script>
 
@@ -38,9 +79,13 @@
   <Form.Control>
     {#snippet children({ props })}
       <Form.Label>Alliance</Form.Label>
-      <Select.Root type="single" name={props.name} bind:value={$formData.alliance}>
+      <Select.Root
+        type="single"
+        name={props.name}
+        bind:value={$formData.alliance}
+      >
         <Select.Trigger {...props} class="w-[180px] truncate">
-          {$formData.alliance || 'Select alliance'}
+          {$formData.alliance || "Select alliance"}
         </Select.Trigger>
         <Select.Content>
           <Select.Item value="red">Red</Select.Item>
@@ -56,8 +101,12 @@
   <Form.Control>
     {#snippet children({ props })}
       <Form.Label>Team</Form.Label>
-      <Select.Root type="single" name={props.name} bind:value={$formData.team_id}>
-        <Select.Trigger { ...props } class="w-[180px] truncate">
+      <Select.Root
+        type="single"
+        name={props.name}
+        bind:value={$formData.team_id}
+      >
+        <Select.Trigger {...props} class="w-[180px] truncate">
           {#if $formData.team_id}
             {$formData.team_id}
           {:else}
@@ -189,9 +238,13 @@
   <Form.Control>
     {#snippet children({ props })}
       <Form.Label>Endgame Location</Form.Label>
-      <Select.Root type="single" name={props.name} bind:value={$formData.pre_endgame_location}>
+      <Select.Root
+        type="single"
+        name={props.name}
+        bind:value={$formData.pre_endgame_location}
+      >
         <Select.Trigger {...props} class="w-[180px] truncate">
-          {$formData.pre_endgame_location || 'Select location'}
+          {$formData.pre_endgame_location || "Select location"}
         </Select.Trigger>
         <Select.Content>
           <Select.Item value="park">Park</Select.Item>
@@ -209,9 +262,13 @@
   <Form.Control>
     {#snippet children({ props })}
       <Form.Label>Consistent At</Form.Label>
-      <Select.Root type="single" name={props.name} bind:value={$formData.consistent_at}>
+      <Select.Root
+        type="single"
+        name={props.name}
+        bind:value={$formData.consistent_at}
+      >
         <Select.Trigger {...props} class="w-[180px] truncate">
-          {$formData.consistent_at || 'Select consistency'}
+          {$formData.consistent_at || "Select consistency"}
         </Select.Trigger>
         <Select.Content>
           <Select.Item value="Sample">Sample</Select.Item>
@@ -228,9 +285,13 @@
   <Form.Control>
     {#snippet children({ props })}
       <Form.Label>Game Strategy</Form.Label>
-      <Select.Root type="single" name={props.name} bind:value={$formData.game_strategy}>
+      <Select.Root
+        type="single"
+        name={props.name}
+        bind:value={$formData.game_strategy}
+      >
         <Select.Trigger {...props} class="w-[180px] truncate">
-          {$formData.game_strategy || 'Select strategy'}
+          {$formData.game_strategy || "Select strategy"}
         </Select.Trigger>
         <Select.Content>
           <Select.Item value="Pushbot">Pushbot</Select.Item>
@@ -248,9 +309,13 @@
   <Form.Control>
     {#snippet children({ props })}
       <Form.Label>Specimen Strategy</Form.Label>
-      <Select.Root type="single" name={props.name} bind:value={$formData.specimen_strategy}>
+      <Select.Root
+        type="single"
+        name={props.name}
+        bind:value={$formData.specimen_strategy}
+      >
         <Select.Trigger {...props} class="w-[180px] truncate">
-          {$formData.specimen_strategy || 'Select strategy'}
+          {$formData.specimen_strategy || "Select strategy"}
         </Select.Trigger>
         <Select.Content>
           <Select.Item value="Stockpile">Stockpile</Select.Item>
@@ -268,12 +333,18 @@
   <Form.Control>
     {#snippet children({ props })}
       <Form.Label>Synergy</Form.Label>
-      <Select.Root type="single" name={props.name} bind:value={$formData.synergy}>
+      <Select.Root
+        type="single"
+        name={props.name}
+        bind:value={$formData.synergy}
+      >
         <Select.Trigger {...props} class="w-[180px] truncate">
-          {$formData.synergy || 'Select synergy'}
+          {$formData.synergy || "Select synergy"}
         </Select.Trigger>
         <Select.Content>
-          <Select.Item value="Good Synergy and Good Team">Good Synergy and Good Team</Select.Item>
+          <Select.Item value="Good Synergy and Good Team"
+            >Good Synergy and Good Team</Select.Item
+          >
           <Select.Item value="Good Team">Good Team</Select.Item>
           <Select.Item value="Mid Team">Mid Team</Select.Item>
           <Select.Item value="Bad">Bad</Select.Item>

@@ -20,6 +20,7 @@
   import { page } from '$app/state';
 
   let { data }: { data: PageData } = $props();
+  console.log(data)
 
   // setup form data
   const form = superForm(data.scoutingForm, {
@@ -130,7 +131,7 @@
             <Tabs.Trigger value="endgame">Endgame</Tabs.Trigger>
           </Tabs.List>
           <Tabs.Content value="team">
-            <MetadataForm {form} {formData} teams={data.team_data} />
+            <MetadataForm {form} {formData} teams={data.team_data} supabase={data.supabase} event_id={selectedEvent} />
           </Tabs.Content>
           <Tabs.Content value="auton">
             <AutonForm {form} {formData} />
