@@ -12,8 +12,18 @@
   import MetadataForm from "./components/MetadataForm.svelte";
   import AutonForm from "./components/AutonForm.svelte";
   import TeleOpForm from "./components/TeleOpForm.svelte";
+  import FormButton from "$lib/components/ui/form/form-button.svelte";
+  import { scoutingSchema } from "./schema/schema";
+  import { superForm } from "sveltekit-superforms";
+  import { zodClient } from "sveltekit-superforms/adapters";
 
   let { data }: { data: PageData } = $props();
+
+  // setup form data
+  const form = superForm(data.scoutingForm, {
+    validators: zodClient(scoutingSchema),
+  });
+  const { form: formData, enhance } = form;
 
   // update selector to show selected value
   let selectedEvent = $state("");
@@ -103,27 +113,32 @@
     </div>
   {:else if pageState == 1}
     <!-- Scouting Form Tabs -->
-    <div class="flex justify-center mt-2 mb-2">
-      <Tabs.Root value="team" class="w-[400px]">
-        <Tabs.List class="grid w-full grid-cols-4">
-          <Tabs.Trigger value="team">Team</Tabs.Trigger>
-          <Tabs.Trigger value="auton">Auton</Tabs.Trigger>
-          <Tabs.Trigger value="teleop">TeleOp</Tabs.Trigger>
-          <Tabs.Trigger value="endgame">Endgame</Tabs.Trigger>
-        </Tabs.List>
-        <Tabs.Content value="team">
-          <MetadataForm data={{ form: data.metadataForm }} />
-        </Tabs.Content>
-        <Tabs.Content value="auton">
-          <AutonForm data={{ form: data.autonForm }} />
-        </Tabs.Content>
-        <Tabs.Content value="teleop">
-          <TeleOpForm data={{ form: data.teleopForm }} />
-        </Tabs.Content>
-        <Tabs.Content value="endgame">
-          <EndgameForm data={{ form: data.endgameForm }} />
-        </Tabs.Content>
-      </Tabs.Root>
-    </div>
+    <form method="POST" action="?/scouting" use:enhance>
+      <div class="flex justify-center mt-2 mb-2">
+        <Tabs.Root value="team" class="w-[400px]">
+          <Tabs.List class="grid w-full grid-cols-4">
+            <Tabs.Trigger value="team">Team</Tabs.Trigger>
+            <Tabs.Trigger value="auton">Auton</Tabs.Trigger>
+            <Tabs.Trigger value="teleop">TeleOp</Tabs.Trigger>
+            <Tabs.Trigger value="endgame">Endgame</Tabs.Trigger>
+          </Tabs.List>
+          <Tabs.Content value="team">
+            <MetadataForm {form} {formData} />
+          </Tabs.Content>
+          <Tabs.Content value="auton">
+            <AutonForm {form} {formData} />
+          </Tabs.Content>
+          <Tabs.Content value="teleop">
+            <TeleOpForm {form} {formData} />
+          </Tabs.Content>
+          <Tabs.Content value="endgame">
+            <EndgameForm {form} {formData} />
+          </Tabs.Content>
+        </Tabs.Root>
+      </div>
+      <div class="flex justify-center mb-2">
+        <FormButton class="mt-5">Submit All</FormButton>
+      </div>
+    </form>
   {/if}
 </div>

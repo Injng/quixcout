@@ -2,7 +2,7 @@ import type { PageServerLoad, Actions } from "./$types.js";
 import { fail } from "@sveltejs/kit";
 import { superValidate, setError } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
-import { autonSchema, endgameSchema, eventFormSchema, teamMetadataSchema, teleopSchema } from "./schema/schema.js";
+import { eventFormSchema, scoutingSchema } from "./schema/schema.js";
 import type { Team } from "./schema/columns.js";
 
 export const load: PageServerLoad = async ({ url, locals: { supabase } }) => {
@@ -67,10 +67,7 @@ export const load: PageServerLoad = async ({ url, locals: { supabase } }) => {
 
   return {
     eventForm: await superValidate(zod(eventFormSchema)),
-    metadataForm: await superValidate(zod(teamMetadataSchema)),
-    autonForm: await superValidate(zod(autonSchema)),
-    teleopForm: await superValidate(zod(teleopSchema)),
-    endgameForm: await superValidate(zod(endgameSchema)),
+    scoutingForm: await superValidate(zod(scoutingSchema)),
     events: events ?? [],
     team_data,
   };
