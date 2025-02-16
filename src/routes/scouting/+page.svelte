@@ -117,46 +117,52 @@
 
         <!-- Data Table -->
         <div class="mt-2">
-            <DataTable data={data.team_data ?? []} {columns} />
+            <DataTable
+                data={data.team_data ?? []}
+                {columns}
+                event={selectedEvent}
+            />
         </div>
     {:else if pageState == 1}
         <!-- Scouting Form Tabs -->
-        <form method="POST" action="?/scouting" use:enhance>
-            <input type="hidden" name="event_id" value={selectedEvent} />
-            <div class="flex justify-center mt-2 mb-2">
-                <Tabs.Root value="team" class="w-[400px]">
-                    <Tabs.List class="grid w-full grid-cols-4">
-                        <Tabs.Trigger value="team">Team</Tabs.Trigger>
-                        <Tabs.Trigger value="auton">Auton</Tabs.Trigger>
-                        <Tabs.Trigger value="teleop">TeleOp</Tabs.Trigger>
-                        <Tabs.Trigger value="endgame">Endgame</Tabs.Trigger>
-                    </Tabs.List>
-                    <Tabs.Content value="team">
-                        <MetadataForm
-                            {form}
-                            {formData}
-                            teams={data.team_data}
-                            supabase={data.supabase}
-                            event_id={selectedEvent}
-                        />
-                    </Tabs.Content>
-                    <Tabs.Content value="auton">
-                        <AutonForm {form} {formData} />
-                    </Tabs.Content>
-                    <Tabs.Content value="teleop">
-                        <TeleOpForm {form} {formData} />
-                    </Tabs.Content>
-                    <Tabs.Content value="endgame">
-                        <EndgameForm {form} {formData} />
-                    </Tabs.Content>
-                </Tabs.Root>
-            </div>
-            <div class="flex justify-center mb-2">
-                <button
-                    class="ring-offset-background focus-visible:ring-ring inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 mt-5"
-                    type="submit">Submit All</button
-                >
-            </div>
-        </form>
+        <div class="p-2">
+            <form method="POST" action="?/scouting" use:enhance>
+                <input type="hidden" name="event_id" value={selectedEvent} />
+                <div class="flex justify-center mt-2 mb-2">
+                    <Tabs.Root value="team" class="w-[400px]">
+                        <Tabs.List class="grid w-full grid-cols-4">
+                            <Tabs.Trigger value="team">Team</Tabs.Trigger>
+                            <Tabs.Trigger value="auton">Auton</Tabs.Trigger>
+                            <Tabs.Trigger value="teleop">TeleOp</Tabs.Trigger>
+                            <Tabs.Trigger value="endgame">Endgame</Tabs.Trigger>
+                        </Tabs.List>
+                        <Tabs.Content value="team">
+                            <MetadataForm
+                                {form}
+                                {formData}
+                                teams={data.team_data}
+                                supabase={data.supabase}
+                                event_id={selectedEvent}
+                            />
+                        </Tabs.Content>
+                        <Tabs.Content value="auton">
+                            <AutonForm {form} {formData} />
+                        </Tabs.Content>
+                        <Tabs.Content value="teleop">
+                            <TeleOpForm {form} {formData} />
+                        </Tabs.Content>
+                        <Tabs.Content value="endgame">
+                            <EndgameForm {form} {formData} />
+                        </Tabs.Content>
+                    </Tabs.Root>
+                </div>
+                <div class="flex justify-center mb-2">
+                    <button
+                        class="ring-offset-background focus-visible:ring-ring inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 mt-5"
+                        type="submit">Submit All</button
+                    >
+                </div>
+            </form>
+        </div>
     {/if}
 </div>

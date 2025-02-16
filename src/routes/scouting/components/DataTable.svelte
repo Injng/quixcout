@@ -14,9 +14,10 @@
     type DataTableProps<TData, TValue> = {
         columns: ColumnDef<TData, TValue>[];
         data: TData[];
+        event: string;
     };
 
-    let { data, columns }: DataTableProps<TData, TValue> = $props();
+    let { data, columns, event }: DataTableProps<TData, TValue> = $props();
     let sorting = $state<SortingState>([]);
 
     const table = createSvelteTable({
@@ -72,14 +73,25 @@
                     {/each}
                 </Table.Row>
             {:else}
-                <Table.Row>
-                    <Table.Cell
-                        colspan={columns.length}
-                        class="h-24 text-center"
-                    >
-                        No results.
-                    </Table.Cell>
-                </Table.Row>
+                {#if event != ""}
+                    <Table.Row>
+                        <Table.Cell
+                            colspan={columns.length}
+                            class="h-24 text-center"
+                        >
+                            Loading...
+                        </Table.Cell>
+                    </Table.Row>
+                {:else}
+                    <Table.Row>
+                        <Table.Cell
+                            colspan={columns.length}
+                            class="h-24 text-center"
+                        >
+                            No results.
+                        </Table.Cell>
+                    </Table.Row>
+                {/if}
             {/each}
         </Table.Body>
     </Table.Root>
