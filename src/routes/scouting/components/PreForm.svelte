@@ -46,7 +46,7 @@
         resetForm: false,
     });
 
-    const { form: formData, enhance } = form;
+    const { form: formData, enhance, submitting } = form;
 
     // fetch and populate team metadata
     async function getMetadata() {
@@ -328,5 +328,32 @@
         </Form.Control>
         <Form.FieldErrors />
     </Form.Field>
-    <Form.Button class="mt-5">Save</Form.Button>
+
+    <Form.Button class="mt-5" disabled={$submitting}>
+        {#if $submitting}
+            <span class="spinner" aria-label="Loading"></span>
+            Saving...
+        {:else}
+            Save
+        {/if}
+    </Form.Button>
 </form>
+
+<style>
+    .spinner {
+        vertical-align: middle;
+        border: 2px solid rgba(0, 0, 0, 0.1);
+        border-left-color: #000;
+        border-radius: 50%;
+        width: 16px;
+        height: 16px;
+        animation: spin 1s linear infinite;
+        display: inline-block;
+        margin-right: 0.5rem;
+    }
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+</style>

@@ -34,7 +34,7 @@
             }
         },
     });
-    const { form: formData, enhance } = form;
+    const { form: formData, enhance, submitting } = form;
 
     // update selector to show selected value
     let selectedEvent = $state(page.url.searchParams.get("event") ?? "");
@@ -186,8 +186,16 @@
                 <div class="flex justify-center mb-2">
                     <button
                         class="ring-offset-background focus-visible:ring-ring inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 mt-5"
-                        type="submit">Submit All</button
+                        type="submit"
+                        disabled={$submitting}
                     >
+                        {#if $submitting}
+                            <span class="spinner" aria-label="Loading"></span>
+                            Submitting...
+                        {:else}
+                            Submit All
+                        {/if}
+                    </button>
                 </div>
             </form>
         </div>
@@ -209,3 +217,22 @@
         </Card.Root>
     {/if}
 </div>
+
+<style>
+    .spinner {
+        vertical-align: middle;
+        border: 2px solid rgba(0, 0, 0, 0.1);
+        border-left-color: #000;
+        border-radius: 50%;
+        width: 16px;
+        height: 16px;
+        animation: spin 1s linear infinite;
+        display: inline-block;
+        margin-right: 0.5rem;
+    }
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+</style>
