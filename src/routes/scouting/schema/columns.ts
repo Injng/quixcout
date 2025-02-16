@@ -1,3 +1,13 @@
+import { renderComponent } from "$lib/components/ui/data-table";
+import AutonButton from "../sorting/AutonButton.svelte";
+import EndgameButton from "../sorting/EndgameButton.svelte";
+import HighSampleButton from "../sorting/HighSampleButton.svelte";
+import HighSpecimenButton from "../sorting/HighSpecimenButton.svelte";
+import LowSampleButton from "../sorting/LowSampleButton.svelte";
+import LowSpecimenButton from "../sorting/LowSpecimenButton.svelte";
+import MatchesButton from "../sorting/MatchesButton.svelte";
+import TeamButton from "../sorting/TeamButton.svelte";
+import TeleOpButton from "../sorting/TeleOpButton.svelte";
 import type { ColumnDef } from "@tanstack/table-core";
 
 export type Team = {
@@ -16,7 +26,10 @@ export type Team = {
 export const columns: ColumnDef<Team>[] = [
   {
     accessorKey: "teamNumber",
-    header: "Team Number",
+    header: ({ column }) =>
+      renderComponent(TeamButton, {
+        onclick: () => column.toggleSorting(column.getIsSorted() === "asc"),
+      }),
   },
   {
     accessorKey: "teamName",
@@ -24,34 +37,58 @@ export const columns: ColumnDef<Team>[] = [
   },
   {
     accessorKey: "matchesPlayed",
-    header: "Matches Played",
+    header: ({ column }) =>
+      renderComponent(MatchesButton, {
+        onclick: () => column.toggleSorting(column.getIsSorted() === "asc"),
+      }),
   },
   {
     accessorKey: "autonAverage",
-    header: "Auton Average",
+    header: ({ column }) =>
+      renderComponent(AutonButton, {
+        onclick: () => column.toggleSorting(column.getIsSorted() === "asc"),
+      }),
   },
   {
     accessorKey: "teleopAverage",
-    header: "Teleop Average",
+    header: ({ column }) =>
+      renderComponent(TeleOpButton, {
+        onclick: () => column.toggleSorting(column.getIsSorted() === "asc"),
+      }),
   },
   {
     accessorKey: "endgameAverage",
-    header: "Endgame Average",
+    header: ({ column }) =>
+      renderComponent(EndgameButton, {
+        onclick: () => column.toggleSorting(column.getIsSorted() === "asc"),
+      }),
   },
   {
     accessorKey: "lowSampleAverage",
-    header: "Low Basket Sample Average",
+    header: ({ column }) =>
+      renderComponent(LowSampleButton, {
+        onclick: () => column.toggleSorting(column.getIsSorted() === "asc"),
+      }),
   },
   {
     accessorKey: "highSampleAverage",
-    header: "High Basket Sample Average",
+    header: ({ column }) =>
+      renderComponent(HighSampleButton, {
+        onclick: () => column.toggleSorting(column.getIsSorted() === "asc"),
+      }),
   },
   {
     accessorKey: "lowSpecimenAverage",
-    header: "Low Chamber Specimen Average",
+    header: ({ column }) =>
+      renderComponent(LowSpecimenButton, {
+        onclick: () => column.toggleSorting(column.getIsSorted() === "asc"),
+      }),
   },
   {
     accessorKey: "highSpecimenAverage",
-    header: "High Chamber Specimen Average",
+    header: ({ column }) =>
+      renderComponent(HighSpecimenButton, {
+        onclick: () => column.toggleSorting(column.getIsSorted() === "asc"),
+      }),
   },
 ];
