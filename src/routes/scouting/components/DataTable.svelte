@@ -15,10 +15,19 @@
         columns: ColumnDef<TData, TValue>[];
         data: TData[];
         event: string;
+        selectedTeam?: string;
     };
 
-    let { data, columns, event }: DataTableProps<TData, TValue> = $props();
+    let {
+        data,
+        columns,
+        event,
+        selectedTeam = $bindable(""),
+    }: DataTableProps<TData, TValue> = $props();
     let sorting = $state<SortingState>([]);
+    $effect(() => {
+        console.log("selectedTeam", selectedTeam);
+    });
 
     const table = createSvelteTable({
         get data() {
@@ -68,6 +77,10 @@
                             <FlexRender
                                 content={cell.column.columnDef.cell}
                                 context={cell.getContext()}
+                                team={String(
+                                    row.getVisibleCells()[0].getValue(),
+                                )}
+                                bind:selected={selectedTeam}
                             />
                         </Table.Cell>
                     {/each}

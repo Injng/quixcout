@@ -1,7 +1,11 @@
 import type { PageServerLoad, Actions } from "./$types.js";
 import { superValidate, setError, message } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
-import { eventFormSchema, scoutingSchema } from "./schema/schema.js";
+import {
+  eventFormSchema,
+  preScoutingSchema,
+  scoutingSchema,
+} from "./schema/schema.js";
 import type { Team } from "./schema/columns.js";
 import { fail } from "@sveltejs/kit";
 import { on } from "svelte/events";
@@ -69,27 +73,81 @@ export const load: PageServerLoad = async ({ url, locals: { supabase } }) => {
   return {
     eventForm: await superValidate(zod(eventFormSchema)),
     scoutingForm: await superValidate(zod(scoutingSchema)),
+    preForm: await superValidate(zod(preScoutingSchema)),
     events: events ?? [],
     team_data,
   };
 };
 
 export const actions: Actions = {
+  pre: async (event) => {
+    // validate the submitted form data against our schema
+    const form = await superValidate(event, zod(preScoutingSchema));
+
+    // if validation fails, return 400 with form errors
+    if (!form.valid) {
+      console.log("Form validation failed:", form.errors);
+      return setError(form, "", "Form validation failed");
+    }
+
+    // get event id from form
+    const eventId = form.data.event_id;
+    if (!eventId) {
+      console.log("Missing event ID");
+      return fail(400, { form, message: "Missing event id." });
+    }
+
+    // upsert into event_team_metadata table with key performance metrics
+    const { error: metadataError } = await event.locals.supabase
+      .from("event_team_metadata")
+      .upsert({
+        event_id: eventId,
+        team_id: form.data.team_id,
+        auton_park: form.data.pre_auton_park,
+        auton_high_basket_sample: form.data.pre_auton_high_basket_samples,
+        auton_high_chamber_specimen: form.data.pre_auton_high_chamber_specimen,
+        total_push_samples: form.data.pre_total_push_samples,
+        total_low_basket_samples: form.data.pre_total_low_basket_samples,
+        total_high_basket_samples: form.data.pre_total_high_basket_samples,
+        total_low_chamber_specimen: form.data.pre_total_low_chamber_specimen,
+        total_high_chamber_specimen: form.data.pre_total_high_chamber_specimen,
+        endgame_location: form.data.pre_endgame_location,
+        consistent_at: form.data.consistent_at,
+        game_strategy: form.data.game_strategy,
+        specimen_strategy: form.data.specimen_strategy,
+        synergy: form.data.synergy,
+        other_notes: form.data.pre_other_notes,
+      });
+    if (metadataError) {
+      console.log("Event team metadata upsert error:", metadataError);
+      return fail(500, {
+        form,
+        message: "Failed to upsert event team metadata",
+      });
+    }
+
+    // return success message
+    return message(form, {
+      alertType: "success",
+      alertText: "Form submitted successfully!",
+    });
+  },
+
   scouting: async (event) => {
     // validate the submitted form data against our schema
     const form = await superValidate(event, zod(scoutingSchema));
 
     // if validation fails, return 400 with form errors
     if (!form.valid) {
-      console.log('Form validation failed:', form.errors);
-      return setError(form, '', 'Form validation failed');
+      console.log("Form validation failed:", form.errors);
+      return setError(form, "", "Form validation failed");
     }
 
-    // get event id from URL query parameters
+    // get event id from form
     const eventId = form.data.event_id;
     if (!eventId) {
-      console.log('Missing event ID');
-      return fail(400, { form, message: 'Missing event id.' });
+      console.log("Missing event ID");
+      return fail(400, { form, message: "Missing event id." });
     }
 
     // check if match has already been inserted
@@ -104,17 +162,15 @@ export const actions: Actions = {
     if (matches == null || matches.length === 0) {
       const { data: matchData, error: matchError } = await event.locals.supabase
         .from("matches")
-        .insert(
-          {
-            match_number: form.data.match_num,
-            event_id: eventId,
-            match_type: "Qualification",
-          },
-        )
+        .insert({
+          match_number: form.data.match_num,
+          event_id: eventId,
+          match_type: "Qualification",
+        })
         .select();
       if (matchError || !matchData || matchData.length === 0) {
-        console.log('Match insert error:', matchError);
-        return fail(500, { form, message: 'Failed to insert match' });
+        console.log("Match insert error:", matchError);
+        return fail(500, { form, message: "Failed to insert match" });
       }
       matchId = matchData[0].match_id;
     } else {
@@ -130,8 +186,8 @@ export const actions: Actions = {
         alliance_color: form.data.alliance,
       });
     if (allianceError) {
-      console.log('Match alliance insert error:', allianceError);
-      return fail(500, { form, message: 'Failed to insert match alliance' });
+      console.log("Match alliance insert error:", allianceError);
+      return fail(500, { form, message: "Failed to insert match alliance" });
     }
 
     // insert into match_performances table with performance metrics
@@ -158,8 +214,8 @@ export const actions: Actions = {
         other_notes: form.data.other_notes,
       });
     if (performanceError) {
-      console.log('Match performance insert error:', performanceError);
-      return fail(500, { form, message: 'Failed to insert match performance' });
+      console.log("Match performance insert error:", performanceError);
+      return fail(500, { form, message: "Failed to insert match performance" });
     }
 
     // upsert into event_team_metadata table with key performance metrics
@@ -184,8 +240,11 @@ export const actions: Actions = {
         other_notes: form.data.pre_other_notes,
       });
     if (metadataError) {
-      console.log('Event team metadata upsert error:', metadataError);
-      return fail(500, { form, message: 'Failed to upsert event team metadata' });
+      console.log("Event team metadata upsert error:", metadataError);
+      return fail(500, {
+        form,
+        message: "Failed to upsert event team metadata",
+      });
     }
 
     // calculate auton points
@@ -235,8 +294,8 @@ export const actions: Actions = {
         .eq("team_id", form.data.team_id)
         .eq("event_id", eventId);
     if (statisticsError || !statistics || statistics.length === 0) {
-      console.log('Team statistics fetch error:', statisticsError);
-      return fail(500, { form, message: 'Failed to get team statistics' });
+      console.log("Team statistics fetch error:", statisticsError);
+      return fail(500, { form, message: "Failed to get team statistics" });
     }
 
     // calculate new averages
@@ -289,14 +348,14 @@ export const actions: Actions = {
         average_high_chamber_specimens: avgHighSpecimens,
       });
     if (newStatsError) {
-      console.log('Team statistics update error:', newStatsError);
-      return fail(500, { form, message: 'Failed to update team statistics' });
+      console.log("Team statistics update error:", newStatsError);
+      return fail(500, { form, message: "Failed to update team statistics" });
     }
 
     // return success message
     return message(form, {
-      alertType: 'success',
-      alertText: 'Form submitted successfully!'
+      alertType: "success",
+      alertText: "Form submitted successfully!",
     });
   },
 
@@ -306,8 +365,8 @@ export const actions: Actions = {
 
     // if validation fails, return 400 with form errors
     if (!form.valid) {
-      console.log('Event form validation failed:', form.errors);
-      return setError(form, '', 'Form validation failed');
+      console.log("Event form validation failed:", form.errors);
+      return setError(form, "", "Form validation failed");
     }
 
     // ensure event does not already exist
@@ -316,26 +375,29 @@ export const actions: Actions = {
       .select("*")
       .eq("event_id", form.data.event);
     if (events != null && events.length > 0) {
-      console.log('Event already exists:', form.data.event);
+      console.log("Event already exists:", form.data.event);
       return fail(400, { form, message: "Event already exists." });
     }
 
     // get event data from FTCScout API
     let response = await fetch(
-      `https://api.ftcscout.org/rest/v1/events/2024/${form.data.event}`
+      `https://api.ftcscout.org/rest/v1/events/2024/${form.data.event}`,
     );
     if (!response.ok) {
-      console.log('Failed to fetch event data:', response.statusText);
-      return fail(400, { form, message: "Failed to fetch data for event code." });
+      console.log("Failed to fetch event data:", response.statusText);
+      return fail(400, {
+        form,
+        message: "Failed to fetch data for event code.",
+      });
     }
     const eventData = await response.json();
 
     // get team data from FTCScout API
     response = await fetch(
-      `https://api.ftcscout.org/rest/v1/events/2024/${form.data.event}/teams`
+      `https://api.ftcscout.org/rest/v1/events/2024/${form.data.event}/teams`,
     );
     if (!response.ok) {
-      console.log('Failed to fetch teams data:', response.statusText);
+      console.log("Failed to fetch teams data:", response.statusText);
       return fail(400, { form, message: "Failed to fetch data for teams." });
     }
     const teamData = await response.json();
@@ -357,8 +419,11 @@ export const actions: Actions = {
       ])
       .select();
     if (error) {
-      console.log('Event insert error:', error);
-      return fail(500, { form, message: "Failed to insert event into database." });
+      console.log("Event insert error:", error);
+      return fail(500, {
+        form,
+        message: "Failed to insert event into database.",
+      });
     }
 
     // for each team at the event, insert number into appropriate tables
@@ -374,11 +439,14 @@ export const actions: Actions = {
       if (teams == null || teams.length === 0) {
         // get the team name from FTCScout
         response = await fetch(
-          `https://api.ftcscout.org/rest/v1/teams/${teamNumber}`
+          `https://api.ftcscout.org/rest/v1/teams/${teamNumber}`,
         );
         if (!response.ok) {
-          console.log('Failed to fetch team name:', response.statusText);
-          return fail(400, { form, message: "Failed to fetch data for team name." });
+          console.log("Failed to fetch team name:", response.statusText);
+          return fail(400, {
+            form,
+            message: "Failed to fetch data for team name.",
+          });
         }
         const teamNameData = await response.json();
         const teamName = teamNameData.name;
@@ -394,8 +462,11 @@ export const actions: Actions = {
           ])
           .select();
         if (teamsError) {
-          console.log('Teams insert error:', teamsError);
-          return fail(500, { form, message: "Failed to insert teams into database." });
+          console.log("Teams insert error:", teamsError);
+          return fail(500, {
+            form,
+            message: "Failed to insert teams into database.",
+          });
         }
       }
 
@@ -405,8 +476,14 @@ export const actions: Actions = {
         .insert([{ event_id: code, team_id: teamNumber }])
         .select();
       if (eventTeamMetadataError) {
-        console.log('Event team metadata insert error:', eventTeamMetadataError);
-        return fail(500, { form, message: "Failed to insert event_team_metadata into database." });
+        console.log(
+          "Event team metadata insert error:",
+          eventTeamMetadataError,
+        );
+        return fail(500, {
+          form,
+          message: "Failed to insert event_team_metadata into database.",
+        });
       }
 
       // insert team into team_statistics
@@ -415,8 +492,11 @@ export const actions: Actions = {
         .insert([{ team_id: teamNumber, event_id: code }])
         .select();
       if (teamStatisticsError) {
-        console.log('Team statistics insert error:', teamStatisticsError);
-        return fail(500, { form, message: "Failed to insert team_statistics into database." });
+        console.log("Team statistics insert error:", teamStatisticsError);
+        return fail(500, {
+          form,
+          message: "Failed to insert team_statistics into database.",
+        });
       }
     }
   },

@@ -1,4 +1,5 @@
 <script lang="ts">
+    import * as Card from "$lib/components/ui/card/index.js";
     import * as Dialog from "$lib/components/ui/dialog/index.js";
     import * as Form from "$lib/components/ui/form/index.js";
     import * as Select from "$lib/components/ui/select/index.js";
@@ -18,10 +19,11 @@
     import { zodClient } from "sveltekit-superforms/adapters";
     import { toast } from "svelte-sonner";
     import { page } from "$app/state";
+    import PreForm from "./components/PreForm.svelte";
 
     let { data }: { data: PageData } = $props();
 
-    // setup form data
+    // setup form data for scouting
     const form = superForm(data.scoutingForm, {
         validators: zodClient(scoutingSchema),
         onUpdated({ form }) {
@@ -40,13 +42,36 @@
     // watch for changes to the selected event and set url
     $effect(() => {
         if (selectedEvent) {
+            selectedTeam = "";
             goto(`?event=${selectedEvent}`);
         }
     });
 
     // state to track what the page is showing
-    // 0 = data table, 1 = scouting forms
+    // 0 = data table, 1 = scouting forms, 2 = team metadata details
     let pageState = $state(0);
+
+    // if a team is selected, show team metadata details
+    let selectedTeam = $state("");
+    let selectedName = $state("");
+    $effect(() => {
+        if (selectedTeam !== "") {
+            (async () => {
+                pageState = 2;
+                selectedName = await getTeamName(Number(selectedTeam));
+            })();
+        }
+    });
+
+    // function to get a team's name from their number
+    async function getTeamName(teamNum: number) {
+        const { data: teamName } = await data.supabase
+            .from("teams")
+            .select("team_name")
+            .eq("team_id", teamNum)
+            .single();
+        return teamName?.team_name;
+    }
 </script>
 
 <div>
@@ -55,6 +80,7 @@
         <button
             onclick={() => {
                 pageState = 0;
+                selectedTeam = "";
             }}>Dashboard</button
         >
         <div class="font-bold grow text-center">QUIXCOUT</div>
@@ -121,6 +147,7 @@
                 data={data.team_data ?? []}
                 {columns}
                 event={selectedEvent}
+                bind:selectedTeam
             />
         </div>
     {:else if pageState == 1}
@@ -164,5 +191,21 @@
                 </div>
             </form>
         </div>
+    {:else if pageState == 2}
+        <Card.Root>
+            <Card.Header>
+                <Card.Title>Team {selectedTeam}</Card.Title>
+                <Card.Description>{selectedName}</Card.Description>
+            </Card.Header>
+            <Card.Content>
+                <PreForm
+                    dataForm={data.preForm}
+                    teamNum={Number(selectedTeam)}
+                    teamName={selectedName}
+                    supabase={data.supabase}
+                    eventId={selectedEvent}
+                />
+            </Card.Content>
+        </Card.Root>
     {/if}
 </div>
