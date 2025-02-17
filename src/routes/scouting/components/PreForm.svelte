@@ -77,7 +77,7 @@
             $formData.game_strategy = metadata.game_strategy;
             $formData.specimen_strategy = metadata.specimen_strategy;
             $formData.synergy = metadata.synergy;
-            $formData.pre_other_notes = metadata.other_notes;
+            $formData.pre_other_notes = metadata.other_notes ?? "";
         }
     }
     getMetadata();
