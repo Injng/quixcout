@@ -27,7 +27,6 @@
         eventId,
     }: {
         dataForm: SuperValidated<Infer<PreScoutingSchema>>;
-        formData: Writable<Infer<PreScoutingSchema>>;
         teamNum: number;
         teamName: string;
         supabase: SupabaseClient;
