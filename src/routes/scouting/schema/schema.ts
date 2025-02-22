@@ -25,6 +25,10 @@ export const scoutingSchema = z.object({
   consistent_at: z.enum(["Sample", "Specimen", "Both"]).optional(),
   game_strategy: z.enum(["Pushbot", "Sample", "Specimen", "Both"]).optional(),
   specimen_strategy: z.enum(["Stockpile", "Cycling", "N/A", "Both"]).optional(),
+  intake_type: z.enum(["Claw", "Active", "Other"]),
+  far_extension: z.boolean().default(false),
+  has_sweeper: z.boolean().default(false),
+  active_room: z.boolean().default(false),
   synergy: z
     .enum(["Good Synergy and Good Team", "Good Team", "Mid Team", "Bad"])
     .optional(),
@@ -67,6 +71,10 @@ export const preScoutingSchema = z.object({
   consistent_at: z.enum(["Sample", "Specimen", "Both"]).optional(),
   game_strategy: z.enum(["Pushbot", "Sample", "Specimen", "Both"]).optional(),
   specimen_strategy: z.enum(["Stockpile", "Cycling", "N/A", "Both"]).optional(),
+  intake_type: z.enum(["Claw", "Active", "Other"]),
+  far_extension: z.boolean().default(false),
+  has_sweeper: z.boolean().default(false),
+  active_room: z.boolean().default(false),
   synergy: z
     .enum(["Good Synergy and Good Team", "Good Team", "Mid Team", "Bad"])
     .optional(),

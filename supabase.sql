@@ -5,6 +5,7 @@ CREATE TYPE game_strategy AS ENUM ('Pushbot', 'Sample', 'Specimen', 'Both');
 CREATE TYPE specimen_strategy AS ENUM ('Stockpile', 'Cycling', 'N/A', 'Both');
 CREATE TYPE team_synergy AS ENUM ('Good Synergy and Good Team', 'Good Team', 'Mid Team', 'Bad');
 CREATE TYPE performance_rating AS ENUM ('Amazing', 'Mid', 'Cooked');
+CREATE TYPE intake_type AS ENUM ('Claw', 'Active', 'Other');
 
 -- Teams table to store persistent team information
 CREATE TABLE teams (
@@ -41,6 +42,10 @@ CREATE TABLE event_team_metadata (
     consistent_at consistent_at,
     game_strategy game_strategy,
     specimen_strategy specimen_strategy,
+    intake_type intake_type,
+    far_extension BOOLEAN DEFAULT FALSE,
+    has_sweeper BOOLEAN DEFAULT FALSE,
+    active_room BOOLEAN DEFAULT FALSE,
     synergy team_synergy,
     other_notes TEXT,
     PRIMARY KEY (event_id, team_id),

@@ -57,6 +57,10 @@
                     $formData.consistent_at = metadata.consistent_at;
                     $formData.game_strategy = metadata.game_strategy;
                     $formData.specimen_strategy = metadata.specimen_strategy;
+                    $formData.intake_type = metadata.intake_type;
+                    $formData.far_extension = metadata.far_extension;
+                    $formData.has_sweeper = metadata.has_sweeper;
+                    $formData.active_room = metadata.active_room;
                     $formData.synergy = metadata.synergy;
                     $formData.pre_other_notes = metadata.other_notes ?? "";
                     filledId = $formData.team_id;
@@ -333,6 +337,61 @@
     </Form.Control>
     <Form.FieldErrors />
 </Form.Field>
+
+<Form.Field {form} name="intake_type">
+    <Form.Control>
+        {#snippet children({ props })}
+            <Form.Label>Intake Type</Form.Label>
+            <Select.Root
+                type="single"
+                name={props.name}
+                bind:value={$formData.intake_type}
+            >
+                <Select.Trigger {...props} class="w-[180px] truncate">
+                    {$formData.intake_type || "Select intake type"}
+                </Select.Trigger>
+                <Select.Content>
+                    <Select.Item value="Claw">Claw</Select.Item>
+                    <Select.Item value="Active">Active</Select.Item>
+                    <Select.Item value="Other">Other</Select.Item>
+                </Select.Content>
+            </Select.Root>
+        {/snippet}
+    </Form.Control>
+    <Form.FieldErrors />
+</Form.Field>
+
+<Form.Field {form} name="far_extension">
+    <Form.Control>
+        {#snippet children({ props })}
+            <Form.Label>Extends Far</Form.Label>
+            <Checkbox {...props} bind:checked={$formData.far_extension} />
+        {/snippet}
+    </Form.Control>
+    <Form.FieldErrors />
+</Form.Field>
+
+<Form.Field {form} name="has_sweeper">
+    <Form.Control>
+        {#snippet children({ props })}
+            <Form.Label>Has Sweeper</Form.Label>
+            <Checkbox {...props} bind:checked={$formData.has_sweeper} />
+        {/snippet}
+    </Form.Control>
+    <Form.FieldErrors />
+</Form.Field>
+
+{#if $formData.intake_type === "Active"}
+    <Form.Field {form} name="active_room">
+        <Form.Control>
+            {#snippet children({ props })}
+                <Form.Label>Active Requires Room</Form.Label>
+                <Checkbox {...props} bind:checked={$formData.active_room} />
+            {/snippet}
+        </Form.Control>
+        <Form.FieldErrors />
+    </Form.Field>
+{/if}
 
 <Form.Field {form} name="synergy">
     <Form.Control>

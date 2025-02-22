@@ -115,6 +115,10 @@ export const actions: Actions = {
         consistent_at: form.data.consistent_at,
         game_strategy: form.data.game_strategy,
         specimen_strategy: form.data.specimen_strategy,
+        intake_type: form.data.intake_type,
+        far_extension: form.data.far_extension,
+        has_sweeper: form.data.has_sweeper,
+        active_room: form.data.active_room,
         synergy: form.data.synergy,
         other_notes: form.data.pre_other_notes,
       });
@@ -236,6 +240,10 @@ export const actions: Actions = {
         consistent_at: form.data.consistent_at,
         game_strategy: form.data.game_strategy,
         specimen_strategy: form.data.specimen_strategy,
+        intake_type: form.data.intake_type,
+        far_extension: form.data.far_extension,
+        has_sweeper: form.data.has_sweeper,
+        active_room: form.data.active_room,
         synergy: form.data.synergy,
         other_notes: form.data.pre_other_notes,
       });
