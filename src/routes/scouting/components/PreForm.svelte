@@ -328,7 +328,7 @@
         <Form.FieldErrors />
     </Form.Field>
 
-    <Form.Button class="mt-5" disabled={$submitting}>
+    <Form.Button class="mt-5 mb-16" disabled={$submitting}>
         {#if $submitting}
             <span class="spinner" aria-label="Loading"></span>
             Saving...
@@ -336,6 +336,18 @@
             Save
         {/if}
     </Form.Button>
+
+    <div
+        class="fixed bottom-0 left-0 right-0 p-4 z-50 bg-gradient-to-r from-zinc-900 to-slate-900 text-white font-semibold text-base shadow-lg backdrop-blur-sm border-t border-white/10"
+    >
+        <div
+            class="container mx-auto flex items-center justify-center space-x-2"
+        >
+            <span class="animate-pulse">✨</span>
+            <p>Don't forget to be GP!</p>
+            <span class="animate-pulse">✨</span>
+        </div>
+    </div>
 </form>
 
 <style>
