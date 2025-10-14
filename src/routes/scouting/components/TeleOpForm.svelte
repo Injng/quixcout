@@ -30,7 +30,7 @@
                 <button
                     type="button"
                     onclick={() => $formData.total_push_samples++}
-                    class="w-10 h-10 text-2xl rounded-lg m-4 outline outline-2"
+                    class="w-10 h-10 text-2xl rounded-lg m-4o utline outline-2"
                     >&plus;</button
                 >
             </div>

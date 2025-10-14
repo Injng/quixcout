@@ -1,8 +1,8 @@
 -- Create custom ENUM types for various choices
-CREATE TYPE endgame_location AS ENUM ('park', 'level_2_ascent', 'level_3_ascent', 'none');
-CREATE TYPE consistent_at AS ENUM ('Sample', 'Specimen', 'Both');
-CREATE TYPE game_strategy AS ENUM ('Pushbot', 'Sample', 'Specimen', 'Both');
-CREATE TYPE specimen_strategy AS ENUM ('Stockpile', 'Cycling', 'N/A', 'Both');
+CREATE TYPE endgame_location AS ENUM ('Partial Base', 'Full Base', 'Both Base', 'None');
+CREATE TYPE consistent_at AS ENUM ('Artifacts', 'Patterns', 'Both');
+CREATE TYPE game_strategy AS ENUM ('Pushbot', 'Artifacts', 'Patterns', 'Both');
+CREATE TYPE artifact_strategy AS ENUM ('Stockpile', 'Cycling', 'N/A', 'Both');
 CREATE TYPE team_synergy AS ENUM ('Good Synergy and Good Team', 'Good Team', 'Mid Team', 'Bad');
 CREATE TYPE performance_rating AS ENUM ('Amazing', 'Mid', 'Cooked');
 CREATE TYPE intake_type AS ENUM ('Claw', 'Active', 'Other');
@@ -22,6 +22,10 @@ CREATE TABLE events (
     event_location VARCHAR(255) NOT NULL,
     event_date DATE NOT NULL,
     event_type VARCHAR(50), -- Regional, State, World Championship, etc.
+    -- RP thresholds
+    movement_threshold INTEGER NOT NULL,
+    goal_threshold INTEGER NOT NULL,
+    pattern_threshold INTEGER NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
@@ -30,22 +34,19 @@ CREATE TABLE events (
 CREATE TABLE event_team_metadata (
     event_id VARCHAR(20) REFERENCES events(event_id),
     team_id INTEGER REFERENCES teams(team_id),
-    auton_park BOOLEAN DEFAULT FALSE,
-    auton_high_basket_sample INTEGER DEFAULT 0,
-    auton_high_chamber_specimen INTEGER DEFAULT 0,
-    total_push_samples INTEGER DEFAULT 0,
-    total_low_basket_samples INTEGER DEFAULT 0,
-    total_high_basket_samples INTEGER DEFAULT 0,
-    total_low_chamber_specimen INTEGER DEFAULT 0,
-    total_high_chamber_specimen INTEGER DEFAULT 0,
-    endgame_location endgame_location DEFAULT 'none',
+    auton_leave BOOLEAN DEFAULT FALSE,
+    auton_classified_artifacts INTEGER DEFAULT 0,
+    auton_overflow_artifacts INTEGER DEFAULT 0,
+    auton_patterns INTEGER DEFAULT 0,
+    total_classified_artifacts INTEGER DEFAULT 0,
+    total_overflow_artifacts INTEGER DEFAULT 0,
+    total_depot_artifacts INTEGER DEFAULT 0,
+    total_patterns INTEGER DEFAULT 0,
+    endgame_location endgame_location DEFAULT 'None',
     consistent_at consistent_at,
     game_strategy game_strategy,
-    specimen_strategy specimen_strategy,
+    artifact_strategy artifact_strategy,
     intake_type intake_type,
-    far_extension BOOLEAN DEFAULT FALSE,
-    has_sweeper BOOLEAN DEFAULT FALSE,
-    active_room BOOLEAN DEFAULT FALSE,
     synergy team_synergy,
     other_notes TEXT,
     PRIMARY KEY (event_id, team_id),
@@ -80,29 +81,27 @@ CREATE TABLE match_performances (
     event_id VARCHAR REFERENCES events(event_id),
     team_id INTEGER REFERENCES teams(team_id),
     -- Autonomous scoring
-    auton_parking BOOLEAN DEFAULT FALSE,
-    auton_push_samples INTEGER DEFAULT 0,
-    auton_low_basket_samples INTEGER DEFAULT 0,
-    auton_high_basket_samples INTEGER DEFAULT 0,
-    auton_low_chamber_specimen INTEGER DEFAULT 0,
-    auton_high_chamber_specimen INTEGER DEFAULT 0,
+    auton_leave BOOLEAN DEFAULT FALSE,
+    auton_classified_artifacts INTEGER DEFAULT 0,
+    auton_overflow_artifacts INTEGER DEFAULT 0,
+    auton_patterns INTEGER DEFAULT 0,
     -- TeleOp scoring
-    total_push_samples INTEGER DEFAULT 0,
-    total_low_basket_samples INTEGER DEFAULT 0,
-    total_high_basket_samples INTEGER DEFAULT 0,
-    total_low_chamber_specimen INTEGER DEFAULT 0,
-    total_high_chamber_specimen INTEGER DEFAULT 0,
+    total_classified_artifacts INTEGER DEFAULT 0,
+    total_overflow_artifacts INTEGER DEFAULT 0,
+    total_depot_artifacts INTEGER DEFAULT 0,
+    total_patterns INTEGER DEFAULT 0,
     -- Endgame and overall
-    endgame_location endgame_location DEFAULT 'none',
+    endgame_location endgame_location DEFAULT 'None',
     dc BOOLEAN DEFAULT FALSE,
     overall_performance performance_rating,
+    ranking_points INTEGER DEFAULT 0,
     other_notes TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     UNIQUE(match_id, team_id)
 );
 
--- Team statistics across events
+-- Team statistics across matches
 CREATE TABLE team_statistics (
     team_id INTEGER REFERENCES teams(team_id),
     event_id VARCHAR(20) REFERENCES events(event_id),
@@ -110,10 +109,11 @@ CREATE TABLE team_statistics (
     average_auton_points DECIMAL(10,2) DEFAULT 0,
     average_teleop_points DECIMAL(10,2) DEFAULT 0,
     average_endgame_points DECIMAL(10,2) DEFAULT 0,
-    average_low_basket_samples DECIMAL(10,2) DEFAULT 0,
-    average_high_basket_samples DECIMAL(10,2) DEFAULT 0,
-    average_low_chamber_specimens DECIMAL(10,2) DEFAULT 0,
-    average_high_chamber_specimens DECIMAL(10,2) DEFAULT 0,
+    average_total_patterns DECIMAL(10,2) DEFAULT 0,
+    average_total_depot_artifacts DECIMAL(10,2) DEFAULT 0,
+    average_total_classified_artifacts DECIMAL(10,2) DEFAULT 0,
+    average_total_overflow_artifacts DECIMAL(10,2) DEFAULT 0,
+    ranking_points INTEGER DEFAULT 0,
     PRIMARY KEY (team_id, event_id),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
