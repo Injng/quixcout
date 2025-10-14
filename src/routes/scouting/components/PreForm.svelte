@@ -57,28 +57,19 @@
             .single();
 
         if (metadata) {
-            $formData.pre_auton_park = metadata.auton_park;
-            $formData.pre_auton_high_basket_samples =
-                metadata.auton_high_basket_sample;
-            $formData.pre_auton_high_chamber_specimen =
-                metadata.auton_high_chamber_specimen;
-            $formData.pre_total_push_samples = metadata.total_push_samples;
-            $formData.pre_total_low_basket_samples =
-                metadata.total_low_basket_samples;
-            $formData.pre_total_high_basket_samples =
-                metadata.total_high_basket_samples;
-            $formData.pre_total_low_chamber_specimen =
-                metadata.total_low_chamber_specimen;
-            $formData.pre_total_high_chamber_specimen =
-                metadata.total_high_chamber_specimen;
+            $formData.pre_auton_leave = metadata.auton_leave;
+            $formData.pre_auton_classified_artifacts = metadata.auton_classified_artifacts;
+            $formData.pre_auton_overflow_artifacts = metadata.auton_overflow_artifacts;
+            $formData.pre_auton_patterns = metadata.auton_patterns;
+            $formData.pre_teleop_classified_artifacts = metadata.teleop_classified_artifacts;
+            $formData.pre_teleop_overflow_artifacts = metadata.teleop_overflow_artifacts;
+            $formData.pre_teleop_depot_artifacts = metadata.teleop_depot_artifacts;
+            $formData.pre_teleop_patterns = metadata.teleop_patterns;
             $formData.pre_endgame_location = metadata.endgame_location;
             $formData.consistent_at = metadata.consistent_at;
             $formData.game_strategy = metadata.game_strategy;
-            $formData.specimen_strategy = metadata.specimen_strategy;
+            $formData.artifact_strategy = metadata.artifact_strategy;
             $formData.intake_type = metadata.intake_type;
-            $formData.far_extension = metadata.far_extension;
-            $formData.has_sweeper = metadata.has_sweeper;
-            $formData.active_room = metadata.active_room;
             $formData.synergy = metadata.synergy;
             $formData.pre_other_notes = metadata.other_notes ?? "";
         }
@@ -89,108 +80,108 @@
 <form method="POST" action="?/pre" use:enhance>
     <input type="hidden" name="event_id" value={eventId} />
     <input type="hidden" name="team_id" value={teamNum} />
-    <Form.Field {form} name="pre_auton_park">
+    <Form.Field {form} name="pre_auton_leave">
         <Form.Control>
             {#snippet children({ props })}
-                <Form.Label>Auton Park</Form.Label>
-                <Checkbox {...props} bind:checked={$formData.pre_auton_park} />
+                <Form.Label>Auton Leave</Form.Label>
+                <Checkbox {...props} bind:checked={$formData.pre_auton_leave} />
             {/snippet}
         </Form.Control>
         <Form.FieldErrors />
     </Form.Field>
 
-    <Form.Field {form} name="pre_auton_high_basket_samples">
+    <Form.Field {form} name="pre_auton_classified_artifacts">
         <Form.Control>
             {#snippet children({ props })}
-                <Form.Label>Auton High Basket Sample</Form.Label>
+                <Form.Label>Auton Classified Artifacts</Form.Label>
                 <Input
                     {...props}
                     type="number"
-                    bind:value={$formData.pre_auton_high_basket_samples}
+                    bind:value={$formData.pre_auton_classified_artifacts}
                 />
             {/snippet}
         </Form.Control>
         <Form.FieldErrors />
     </Form.Field>
 
-    <Form.Field {form} name="pre_auton_high_chamber_specimen">
+    <Form.Field {form} name="pre_auton_overflow_artifacts">
         <Form.Control>
             {#snippet children({ props })}
-                <Form.Label>Auton High Chamber Specimen</Form.Label>
+                <Form.Label>Auton Overflow Artifacts</Form.Label>
                 <Input
                     {...props}
                     type="number"
-                    bind:value={$formData.pre_auton_high_chamber_specimen}
+                    bind:value={$formData.pre_auton_overflow_artifacts}
                 />
             {/snippet}
         </Form.Control>
         <Form.FieldErrors />
     </Form.Field>
 
-    <Form.Field {form} name="pre_total_push_samples">
+    <Form.Field {form} name="pre_auton_patterns">
         <Form.Control>
             {#snippet children({ props })}
-                <Form.Label>Total Push Samples</Form.Label>
+                <Form.Label>Auton Patterns</Form.Label>
                 <Input
                     {...props}
                     type="number"
-                    bind:value={$formData.pre_total_push_samples}
+                    bind:value={$formData.pre_auton_patterns}
                 />
             {/snippet}
         </Form.Control>
         <Form.FieldErrors />
     </Form.Field>
 
-    <Form.Field {form} name="pre_total_low_basket_samples">
+    <Form.Field {form} name="pre_teleop_classified_artifacts">
         <Form.Control>
             {#snippet children({ props })}
-                <Form.Label>Total Low Basket Samples</Form.Label>
+                <Form.Label>Teleop Classified Artifacts</Form.Label>
                 <Input
                     {...props}
                     type="number"
-                    bind:value={$formData.pre_total_low_basket_samples}
+                    bind:value={$formData.pre_teleop_classified_artifacts}
                 />
             {/snippet}
         </Form.Control>
         <Form.FieldErrors />
     </Form.Field>
 
-    <Form.Field {form} name="pre_total_high_basket_samples">
+    <Form.Field {form} name="pre_teleop_overflow_artifacts">
         <Form.Control>
             {#snippet children({ props })}
-                <Form.Label>Total High Basket Samples</Form.Label>
+                <Form.Label>Teleop Overflow Artifacts</Form.Label>
                 <Input
                     {...props}
                     type="number"
-                    bind:value={$formData.pre_total_high_basket_samples}
+                    bind:value={$formData.pre_teleop_overflow_artifacts}
                 />
             {/snippet}
         </Form.Control>
         <Form.FieldErrors />
     </Form.Field>
 
-    <Form.Field {form} name="pre_total_low_chamber_specimen">
+    <Form.Field {form} name="pre_teleop_depot_artifacts">
         <Form.Control>
             {#snippet children({ props })}
-                <Form.Label>Total Low Chamber Specimen</Form.Label>
+                <Form.Label>Teleop Depot Artifacts</Form.Label>
                 <Input
                     {...props}
                     type="number"
-                    bind:value={$formData.pre_total_low_chamber_specimen}
+                    bind:value={$formData.pre_teleop_depot_artifacts}
                 />
             {/snippet}
         </Form.Control>
         <Form.FieldErrors />
     </Form.Field>
 
-    <Form.Field {form} name="pre_total_high_chamber_specimen">
+    <Form.Field {form} name="pre_teleop_patterns">
         <Form.Control>
             {#snippet children({ props })}
-                <Form.Label>Total High Chamber Specimen</Form.Label>
+                <Form.Label>Teleop Patterns</Form.Label>
                 <Input
                     {...props}
                     type="number"
-                    bind:value={$formData.pre_total_high_chamber_specimen}
+                    bind:value={$formData.pre_teleop_patterns}
                 />
             {/snippet}
         </Form.Control>
@@ -210,14 +201,10 @@
                         {$formData.pre_endgame_location || "Select location"}
                     </Select.Trigger>
                     <Select.Content>
-                        <Select.Item value="park">Park</Select.Item>
-                        <Select.Item value="level_2_ascent"
-                            >Level 2 Ascent</Select.Item
-                        >
-                        <Select.Item value="level_3_ascent"
-                            >Level 3 Ascent</Select.Item
-                        >
-                        <Select.Item value="none">None</Select.Item>
+                        <Select.Item value="Partial Base">Partial Base</Select.Item>
+                        <Select.Item value="Full Base">Full Base</Select.Item>
+                        <Select.Item value="Both Base">Both Base</Select.Item>
+                        <Select.Item value="None">None</Select.Item>
                     </Select.Content>
                 </Select.Root>
             {/snippet}
@@ -238,8 +225,8 @@
                         {$formData.consistent_at || "Select consistency"}
                     </Select.Trigger>
                     <Select.Content>
-                        <Select.Item value="Sample">Sample</Select.Item>
-                        <Select.Item value="Specimen">Specimen</Select.Item>
+                        <Select.Item value="Artifacts">Artifacts</Select.Item>
+                        <Select.Item value="Patterns">Patterns</Select.Item>
                         <Select.Item value="Both">Both</Select.Item>
                     </Select.Content>
                 </Select.Root>
@@ -262,8 +249,8 @@
                     </Select.Trigger>
                     <Select.Content>
                         <Select.Item value="Pushbot">Pushbot</Select.Item>
-                        <Select.Item value="Sample">Sample</Select.Item>
-                        <Select.Item value="Specimen">Specimen</Select.Item>
+                        <Select.Item value="Artifacts">Artifacts</Select.Item>
+                        <Select.Item value="Patterns">Patterns</Select.Item>
                         <Select.Item value="Both">Both</Select.Item>
                     </Select.Content>
                 </Select.Root>
@@ -272,17 +259,17 @@
         <Form.FieldErrors />
     </Form.Field>
 
-    <Form.Field {form} name="specimen_strategy">
+    <Form.Field {form} name="artifact_strategy">
         <Form.Control>
             {#snippet children({ props })}
-                <Form.Label>Specimen Strategy</Form.Label>
+                <Form.Label>Artifact Strategy</Form.Label>
                 <Select.Root
                     type="single"
                     name={props.name}
-                    bind:value={$formData.specimen_strategy}
+                    bind:value={$formData.artifact_strategy}
                 >
                     <Select.Trigger {...props} class="w-[180px] truncate">
-                        {$formData.specimen_strategy || "Select strategy"}
+                        {$formData.artifact_strategy || "Select strategy"}
                     </Select.Trigger>
                     <Select.Content>
                         <Select.Item value="Stockpile">Stockpile</Select.Item>
@@ -319,37 +306,7 @@
         <Form.FieldErrors />
     </Form.Field>
 
-    <Form.Field {form} name="far_extension">
-        <Form.Control>
-            {#snippet children({ props })}
-                <Form.Label>Extends Far</Form.Label>
-                <Checkbox {...props} bind:checked={$formData.far_extension} />
-            {/snippet}
-        </Form.Control>
-        <Form.FieldErrors />
-    </Form.Field>
-
-    <Form.Field {form} name="has_sweeper">
-        <Form.Control>
-            {#snippet children({ props })}
-                <Form.Label>Has Sweeper</Form.Label>
-                <Checkbox {...props} bind:checked={$formData.has_sweeper} />
-            {/snippet}
-        </Form.Control>
-        <Form.FieldErrors />
-    </Form.Field>
-
-    {#if $formData.intake_type === "Active"}
-        <Form.Field {form} name="active_room">
-            <Form.Control>
-                {#snippet children({ props })}
-                    <Form.Label>Active Requires Room</Form.Label>
-                    <Checkbox {...props} bind:checked={$formData.active_room} />
-                {/snippet}
-            </Form.Control>
-            <Form.FieldErrors />
-        </Form.Field>
-    {/if}
+    <!-- Removed deprecated fields: far_extension, has_sweeper, active_room -->
 
     <Form.Field {form} name="synergy">
         <Form.Control>

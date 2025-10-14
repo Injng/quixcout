@@ -21,10 +21,10 @@
           >{$formData.endgame_location}</Select.Trigger
         >
         <Select.Content>
-          <Select.Item value="park">Park</Select.Item>
-          <Select.Item value="level_2_ascent">Level 2 Ascent</Select.Item>
-          <Select.Item value="level_3_ascent">Level 3 Ascent</Select.Item>
-          <Select.Item value="none">None</Select.Item>
+          <Select.Item value="Partial Base">Partial Base</Select.Item>
+          <Select.Item value="Full Base">Full Base</Select.Item>
+          <Select.Item value="Both Base">Both Base</Select.Item>
+          <Select.Item value="None">None</Select.Item>
         </Select.Content>
       </Select.Root>
     {/snippet}

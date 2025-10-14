@@ -15,10 +15,10 @@ export const scoutingSchema = z.object({
   pre_auton_classified_artifacts: z.number().int().default(0),
   pre_auton_overflow_artifacts: z.number().int().default(0),
   pre_auton_patterns: z.number().int().default(0),
-  pre_total_classified_artifacts: z.number().int().default(0),
-  pre_total_depot_artifacts: z.number().int().default(0),
-  pre_total_overflow_artifacts: z.number().int().default(0),
-  pre_total_patterns: z.number().int().default(0),
+  pre_teleop_classified_artifacts: z.number().int().default(0),
+  pre_teleop_depot_artifacts: z.number().int().default(0),
+  pre_teleop_overflow_artifacts: z.number().int().default(0),
+  pre_teleop_patterns: z.number().int().default(0),
   pre_endgame_location: z
     .enum(["Partial Base", "Full Base", "Both Base", "None"])
     .default("None"),
@@ -34,10 +34,11 @@ export const scoutingSchema = z.object({
   auton_classified_artifacts: z.number().int().default(0),
   auton_overflow_artifacts: z.number().int().default(0),
   auton_patterns: z.number().int().default(0),
-  total_classified_artifacts: z.number().int().default(0),
-  total_overflow_artifacts: z.number().int().default(0),
-  total_depot_artifacts: z.number().int().default(0),
-  total_patterns: z.number().int().default(0),
+  motif: z.enum(["GPP", "PGP", "PPG"]).optional(),
+  teleop_classified_artifacts: z.number().int().default(0),
+  teleop_overflow_artifacts: z.number().int().default(0),
+  teleop_depot_artifacts: z.number().int().default(0),
+  teleop_patterns: z.number().int().default(0),
   endgame_location: z
     .enum(["Partial Base", "Full Base", "Both Base", "None"])
     .default("None"),
@@ -55,10 +56,10 @@ export const preScoutingSchema = z.object({
   pre_auton_classified_artifacts: z.number().int().default(0),
   pre_auton_overflow_artifacts: z.number().int().default(0),
   pre_auton_patterns: z.number().int().default(0),
-  pre_total_classified_artifacts: z.number().int().default(0),
-  pre_total_depot_artifacts: z.number().int().default(0),
-  pre_total_overflow_artifacts: z.number().int().default(0),
-  pre_total_patterns: z.number().int().default(0),
+  pre_teleop_classified_artifacts: z.number().int().default(0),
+  pre_teleop_depot_artifacts: z.number().int().default(0),
+  pre_teleop_overflow_artifacts: z.number().int().default(0),
+  pre_teleop_patterns: z.number().int().default(0),
   pre_endgame_location: z
     .enum(["Partial Base", "Full Base", "Both Base", "None"])
     .default("None"),
