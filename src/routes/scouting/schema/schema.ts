@@ -42,6 +42,8 @@ export const scoutingSchema = z.object({
   endgame_location: z
     .enum(["Partial Base", "Full Base", "Both Base", "None"])
     .default("None"),
+  win: z.boolean().default(false),
+  tie: z.boolean().default(false),
   dc: z.boolean().default(false),
   overall_performance: z.enum(["Amazing", "Mid", "Cooked"]).optional(),
   other_notes: z.string().optional(),

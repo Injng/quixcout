@@ -42,6 +42,26 @@
   <Form.FieldErrors />
 </Form.Field>
 
+<Form.Field {form} name="win">
+  <Form.Control>
+    {#snippet children({ props })}
+      <Form.Label>Win</Form.Label>
+      <Checkbox {...props} bind:checked={$formData.win} />
+    {/snippet}
+  </Form.Control>
+  <Form.FieldErrors />
+</Form.Field>
+
+<Form.Field {form} name="tie">
+  <Form.Control>
+    {#snippet children({ props })}
+      <Form.Label>Tie</Form.Label>
+      <Checkbox {...props} bind:checked={$formData.tie} />
+    {/snippet}
+  </Form.Control>
+  <Form.FieldErrors />
+</Form.Field>
+
 <Form.Field {form} name="overall_performance">
   <Form.Control>
     {#snippet children({ props })}
