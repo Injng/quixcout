@@ -8,6 +8,8 @@
 </script>
 
 <Button {variant} {...restProps} class="h-auto">
-    <span class="whitespace-normal block text-center">Low Sample Average</span>
+    <span class="whitespace-normal block text-center">Classified Artifacts Average</span>
     <ArrowUpDown class="ml-2" />
 </Button>
+
+

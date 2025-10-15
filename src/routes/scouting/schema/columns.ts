@@ -1,13 +1,14 @@
 import { renderComponent } from "$lib/components/ui/data-table";
 import AutonButton from "../sorting/AutonButton.svelte";
 import EndgameButton from "../sorting/EndgameButton.svelte";
-import HighSampleButton from "../sorting/HighSampleButton.svelte";
-import HighSpecimenButton from "../sorting/HighSpecimenButton.svelte";
-import LowSampleButton from "../sorting/LowSampleButton.svelte";
-import LowSpecimenButton from "../sorting/LowSpecimenButton.svelte";
 import MatchesButton from "../sorting/MatchesButton.svelte";
 import TeamButton from "../sorting/TeamButton.svelte";
 import TeleOpButton from "../sorting/TeleOpButton.svelte";
+import PatternsButton from "../sorting/PatternsButton.svelte";
+import DepotArtifactsButton from "../sorting/DepotArtifactsButton.svelte";
+import ClassifiedArtifactsButton from "../sorting/ClassifiedArtifactsButton.svelte";
+import OverflowArtifactsButton from "../sorting/OverflowArtifactsButton.svelte";
+import RankingPointsButton from "../sorting/RankingPointsButton.svelte";
 import type { ColumnDef } from "@tanstack/table-core";
 
 export type Team = {
@@ -17,10 +18,11 @@ export type Team = {
   autonAverage: number;
   teleopAverage: number;
   endgameAverage: number;
-  lowSampleAverage: number;
-  highSampleAverage: number;
-  lowSpecimenAverage: number;
-  highSpecimenAverage: number;
+  totalPatternsAverage: number;
+  totalDepotArtifactsAverage: number;
+  totalClassifiedArtifactsAverage: number;
+  totalOverflowArtifactsAverage: number;
+  rankingPointsAverage: number;
 };
 
 export const columns: ColumnDef<Team>[] = [
@@ -39,6 +41,13 @@ export const columns: ColumnDef<Team>[] = [
     accessorKey: "matchesPlayed",
     header: ({ column }) =>
       renderComponent(MatchesButton, {
+        onclick: () => column.toggleSorting(column.getIsSorted() === "asc"),
+      }),
+  },
+  {
+    accessorKey: "rankingPoints",
+    header: ({ column }) =>
+      renderComponent(RankingPointsButton, {
         onclick: () => column.toggleSorting(column.getIsSorted() === "asc"),
       }),
   },
@@ -64,30 +73,30 @@ export const columns: ColumnDef<Team>[] = [
       }),
   },
   {
-    accessorKey: "lowSampleAverage",
+    accessorKey: "totalPatternsAverage",
     header: ({ column }) =>
-      renderComponent(LowSampleButton, {
+      renderComponent(PatternsButton, {
         onclick: () => column.toggleSorting(column.getIsSorted() === "asc"),
       }),
   },
   {
-    accessorKey: "highSampleAverage",
+    accessorKey: "totalDepotArtifactsAverage",
     header: ({ column }) =>
-      renderComponent(HighSampleButton, {
+      renderComponent(DepotArtifactsButton, {
         onclick: () => column.toggleSorting(column.getIsSorted() === "asc"),
       }),
   },
   {
-    accessorKey: "lowSpecimenAverage",
+    accessorKey: "totalClassifiedArtifactsAverage",
     header: ({ column }) =>
-      renderComponent(LowSpecimenButton, {
+      renderComponent(ClassifiedArtifactsButton, {
         onclick: () => column.toggleSorting(column.getIsSorted() === "asc"),
       }),
   },
   {
-    accessorKey: "highSpecimenAverage",
+    accessorKey: "totalOverflowArtifactsAverage",
     header: ({ column }) =>
-      renderComponent(HighSpecimenButton, {
+      renderComponent(OverflowArtifactsButton, {
         onclick: () => column.toggleSorting(column.getIsSorted() === "asc"),
       }),
   },

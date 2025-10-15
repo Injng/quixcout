@@ -45,10 +45,11 @@ export const load: PageServerLoad = async ({ url, locals: { supabase } }) => {
       const avgAutonPoints = team.average_auton_points;
       const avgTeleopPoints = team.average_teleop_points;
       const avgEndgamePoints = team.average_endgame_points;
-      const avgLowSamples = team.average_low_basket_samples;
-      const avgHighSamples = team.average_high_basket_samples;
-      const avgLowSpecimens = team.average_low_chamber_specimens;
-      const avgHighSpecimens = team.average_high_chamber_specimens;
+      const avgTotalPatterns = team.average_total_patterns;
+      const avgTotalDepotArtifacts = team.average_total_depot_artifacts;
+      const avgTotalClassifiedArtifacts = team.average_total_classified_artifacts;
+      const avgTotalOverflowArtifacts = team.average_total_overflow_artifacts;
+      const avgRankingPoints = team.ranking_points;
 
       // create the team object
       team_data.push({
@@ -58,10 +59,11 @@ export const load: PageServerLoad = async ({ url, locals: { supabase } }) => {
         autonAverage: avgAutonPoints,
         teleopAverage: avgTeleopPoints,
         endgameAverage: avgEndgamePoints,
-        lowSampleAverage: avgLowSamples,
-        highSampleAverage: avgHighSamples,
-        lowSpecimenAverage: avgLowSpecimens,
-        highSpecimenAverage: avgHighSpecimens,
+        totalPatternsAverage: avgTotalPatterns,
+        totalDepotArtifactsAverage: avgTotalDepotArtifacts,
+        totalClassifiedArtifactsAverage: avgTotalClassifiedArtifacts,
+        totalOverflowArtifactsAverage: avgTotalOverflowArtifacts,
+        rankingPointsAverage: avgRankingPoints,
       });
     }
   }
@@ -103,22 +105,19 @@ export const actions: Actions = {
       .upsert({
         event_id: eventId,
         team_id: form.data.team_id,
-        auton_park: form.data.pre_auton_park,
-        auton_high_basket_sample: form.data.pre_auton_high_basket_samples,
-        auton_high_chamber_specimen: form.data.pre_auton_high_chamber_specimen,
-        total_push_samples: form.data.pre_total_push_samples,
-        total_low_basket_samples: form.data.pre_total_low_basket_samples,
-        total_high_basket_samples: form.data.pre_total_high_basket_samples,
-        total_low_chamber_specimen: form.data.pre_total_low_chamber_specimen,
-        total_high_chamber_specimen: form.data.pre_total_high_chamber_specimen,
+        auton_leave: form.data.pre_auton_leave,
+        auton_classified_artifacts: form.data.pre_auton_classified_artifacts,
+        auton_overflow_artifacts: form.data.pre_auton_overflow_artifacts,
+        auton_patterns: form.data.pre_auton_patterns,
+        teleop_classified_artifacts: form.data.pre_teleop_classified_artifacts,
+        teleop_overflow_artifacts: form.data.pre_teleop_overflow_artifacts,
+        teleop_depot_artifacts: form.data.pre_teleop_depot_artifacts,
+        teleop_patterns: form.data.pre_teleop_patterns,
         endgame_location: form.data.pre_endgame_location,
         consistent_at: form.data.consistent_at,
         game_strategy: form.data.game_strategy,
-        specimen_strategy: form.data.specimen_strategy,
+        artifact_strategy: form.data.artifact_strategy,
         intake_type: form.data.intake_type,
-        far_extension: form.data.far_extension,
-        has_sweeper: form.data.has_sweeper,
-        active_room: form.data.active_room,
         synergy: form.data.synergy,
         other_notes: form.data.pre_other_notes,
       });
@@ -201,17 +200,14 @@ export const actions: Actions = {
         match_id: matchId,
         event_id: eventId,
         team_id: form.data.team_id,
-        auton_parking: form.data.auton_parking,
-        auton_push_samples: form.data.auton_push_samples,
-        auton_low_basket_samples: form.data.auton_low_basket_samples,
-        auton_high_basket_samples: form.data.auton_high_basket_samples,
-        auton_low_chamber_specimen: form.data.auton_low_chamber_specimen,
-        auton_high_chamber_specimen: form.data.auton_high_chamber_specimen,
-        total_push_samples: form.data.total_push_samples,
-        total_low_basket_samples: form.data.total_low_basket_samples,
-        total_high_basket_samples: form.data.total_high_basket_samples,
-        total_low_chamber_specimen: form.data.total_low_chamber_specimen,
-        total_high_chamber_specimen: form.data.total_high_chamber_specimen,
+        auton_leave: form.data.auton_leave,
+        auton_classified_artifacts: form.data.auton_classified_artifacts,
+        auton_overflow_artifacts: form.data.auton_overflow_artifacts,
+        auton_patterns: form.data.auton_patterns,
+        teleop_classified_artifacts: form.data.teleop_classified_artifacts,
+        teleop_overflow_artifacts: form.data.teleop_overflow_artifacts,
+        teleop_depot_artifacts: form.data.teleop_depot_artifacts,
+        teleop_patterns: form.data.teleop_patterns,
         endgame_location: form.data.endgame_location,
         dc: form.data.dc,
         overall_performance: form.data.overall_performance,
@@ -228,22 +224,19 @@ export const actions: Actions = {
       .upsert({
         event_id: eventId,
         team_id: form.data.team_id,
-        auton_park: form.data.pre_auton_park,
-        auton_high_basket_sample: form.data.pre_auton_high_basket_samples,
-        auton_high_chamber_specimen: form.data.pre_auton_high_chamber_specimen,
-        total_push_samples: form.data.pre_total_push_samples,
-        total_low_basket_samples: form.data.pre_total_low_basket_samples,
-        total_high_basket_samples: form.data.pre_total_high_basket_samples,
-        total_low_chamber_specimen: form.data.pre_total_low_chamber_specimen,
-        total_high_chamber_specimen: form.data.pre_total_high_chamber_specimen,
+        auton_leave: form.data.pre_auton_leave,
+        auton_classified_artifacts: form.data.pre_auton_classified_artifacts,
+        auton_overflow_artifacts: form.data.pre_auton_overflow_artifacts,
+        auton_patterns: form.data.pre_auton_patterns,
+        teleop_classified_artifacts: form.data.pre_teleop_classified_artifacts,
+        teleop_overflow_artifacts: form.data.pre_teleop_overflow_artifacts,
+        teleop_depot_artifacts: form.data.pre_teleop_depot_artifacts,
+        teleop_patterns: form.data.pre_teleop_patterns,
         endgame_location: form.data.pre_endgame_location,
         consistent_at: form.data.consistent_at,
         game_strategy: form.data.game_strategy,
-        specimen_strategy: form.data.specimen_strategy,
+        artifact_strategy: form.data.artifact_strategy,
         intake_type: form.data.intake_type,
-        far_extension: form.data.far_extension,
-        has_sweeper: form.data.has_sweeper,
-        active_room: form.data.active_room,
         synergy: form.data.synergy,
         other_notes: form.data.pre_other_notes,
       });
@@ -256,43 +249,58 @@ export const actions: Actions = {
     }
 
     // calculate auton points
-    const autonPushSamplePoints = form.data.auton_push_samples * 2;
-    const autonLowSamplePoints = form.data.auton_low_basket_samples * 4;
-    const autonHighSamplePoints = form.data.auton_high_basket_samples * 8;
-    const autonLowSpecimenPoints = form.data.auton_low_chamber_specimen * 6;
-    const autonHighSpecimenPoints = form.data.auton_high_chamber_specimen * 10;
-    const autonParkingPoints = form.data.auton_parking ? 3 : 0;
+    const autonClassifiedArtifactPoints = form.data.auton_classified_artifacts * 3;
+    const autonOverflowArtifactPoints = form.data.auton_overflow_artifacts * 1;
+    const autonPatternsPoints = form.data.auton_patterns * 2;
+    const autonLeavePoints = form.data.auton_leave ? 3 : 0;
     const totalAutonPoints =
-      autonPushSamplePoints +
-      autonLowSamplePoints +
-      autonHighSamplePoints +
-      autonLowSpecimenPoints +
-      autonHighSpecimenPoints +
-      autonParkingPoints;
+      autonClassifiedArtifactPoints +
+      autonOverflowArtifactPoints +
+      autonPatternsPoints +
+      autonLeavePoints;
 
     // calculate teleop points
-    const teleopPushSamplePoints = form.data.total_push_samples * 2;
-    const teleopLowSamplePoints = form.data.total_low_basket_samples * 4;
-    const teleopHighSamplePoints = form.data.total_high_basket_samples * 8;
-    const teleopLowSpecimenPoints = form.data.total_low_chamber_specimen * 6;
-    const teleopHighSpecimenPoints = form.data.total_high_chamber_specimen * 10;
+    const teleopClassifiedArtifactPoints = form.data.teleop_classified_artifacts * 3;
+    const teleopOverflowArtifactPoints = form.data.teleop_overflow_artifacts * 1;
+    const teleopDepotArtifactPoints = form.data.teleop_depot_artifacts * 1;
+    const teleopPatternsPoints = form.data.teleop_patterns * 2;
     const totalTeleopPoints =
-      teleopPushSamplePoints +
-      teleopLowSamplePoints +
-      teleopHighSamplePoints +
-      teleopLowSpecimenPoints +
-      teleopHighSpecimenPoints +
-      totalAutonPoints -
-      autonParkingPoints;
+      teleopClassifiedArtifactPoints +
+      teleopOverflowArtifactPoints +
+      teleopDepotArtifactPoints +
+      teleopPatternsPoints;
 
     // calculate endgame points
-    const endgameParkingPoints = form.data.endgame_location === "park" ? 5 : 0;
-    const endgameLevel2Points =
-      form.data.endgame_location === "level_2_ascent" ? 15 : 0;
-    const endgameLevel3Points =
-      form.data.endgame_location === "level_3_ascent" ? 30 : 0;
-    const totalEndgamePoints =
-      endgameParkingPoints + endgameLevel2Points + endgameLevel3Points;
+    let endgameBasePoints = 0;
+    if (form.data.endgame_location === "Partial Base") {
+      endgameBasePoints = 5;
+    } else if (form.data.endgame_location === "Full Base") {
+      endgameBasePoints = 10;
+    } else if (form.data.endgame_location === "Both Base") {
+      endgameBasePoints = 20;
+    }
+    const totalEndgamePoints = endgameBasePoints;
+
+    // get ranking point thresholds
+    const { data: thresholds, error: thresholdsError } = await event.locals.supabase
+      .from("events")
+      .select("movement_threshold, goal_threshold, pattern_threshold")
+      .eq("event_id", eventId)
+      .single();
+    if (thresholdsError || !thresholds) {
+      console.log("Thresholds fetch error:", thresholdsError);
+      return fail(500, { form, message: "Failed to get thresholds" });
+    }
+    const { movement_threshold, goal_threshold, pattern_threshold } = thresholds;
+
+    // calculate ranking points
+    const totalScored = form.data.auton_classified_artifacts + form.data.auton_overflow_artifacts + form.data.teleop_classified_artifacts + form.data.teleop_overflow_artifacts + form.data.teleop_depot_artifacts;
+    const movementRP = autonLeavePoints + endgameBasePoints >= movement_threshold ? 1 : 0;
+    const goalRP = totalScored >= goal_threshold ? 1 : 0;
+    const patternRP = autonPatternsPoints + teleopPatternsPoints >= pattern_threshold ? 1 : 0;
+    const winRP = form.data.win ? 3 : 0;
+    const tieRP = form.data.tie ? 1 : 0;
+    const totalRP = movementRP + goalRP + patternRP + winRP + tieRP;
 
     // get current team statistics
     const { data: statistics, error: statisticsError } =
@@ -320,25 +328,23 @@ export const actions: Actions = {
       (statistics[0].average_endgame_points * statistics[0].matches_played +
         totalEndgamePoints) /
       matchesPlayed;
-    const avgLowSamples =
-      (statistics[0].average_low_basket_samples * statistics[0].matches_played +
-        form.data.total_low_basket_samples) /
+    const avgTotalPatterns =
+      (statistics[0].average_total_patterns * statistics[0].matches_played +
+        form.data.auton_patterns + form.data.teleop_patterns) /
       matchesPlayed;
-    const avgHighSamples =
-      (statistics[0].average_high_basket_samples *
-        statistics[0].matches_played +
-        form.data.total_high_basket_samples) /
+    const avgTotalDepotArtifacts =
+      (statistics[0].average_total_depot_artifacts * statistics[0].matches_played +
+        form.data.teleop_depot_artifacts) /
       matchesPlayed;
-    const avgLowSpecimens =
-      (statistics[0].average_low_chamber_specimens *
-        statistics[0].matches_played +
-        form.data.total_low_chamber_specimen) /
+    const avgTotalClassifiedArtifacts =
+      (statistics[0].average_total_classified_artifacts * statistics[0].matches_played +
+        form.data.teleop_classified_artifacts + form.data.auton_classified_artifacts) /
       matchesPlayed;
-    const avgHighSpecimens =
-      (statistics[0].average_high_chamber_specimens *
-        statistics[0].matches_played +
-        form.data.total_high_chamber_specimen) /
+    const avgTotalOverflowArtifacts =
+      (statistics[0].average_total_overflow_artifacts * statistics[0].matches_played +
+        form.data.teleop_overflow_artifacts + form.data.auton_overflow_artifacts) /
       matchesPlayed;
+    const rankingPoints = statistics[0].ranking_points + totalRP;
 
     // update team statistics table with new data
     const { error: newStatsError } = await event.locals.supabase
@@ -350,10 +356,11 @@ export const actions: Actions = {
         average_auton_points: avgAuton,
         average_teleop_points: avgTeleop,
         average_endgame_points: avgEndgame,
-        average_low_basket_samples: avgLowSamples,
-        average_high_basket_samples: avgHighSamples,
-        average_low_chamber_specimens: avgLowSpecimens,
-        average_high_chamber_specimens: avgHighSpecimens,
+        average_total_patterns: avgTotalPatterns,
+        average_total_depot_artifacts: avgTotalDepotArtifacts,
+        average_total_classified_artifacts: avgTotalClassifiedArtifacts,
+        average_total_overflow_artifacts: avgTotalOverflowArtifacts,
+        ranking_points: rankingPoints,
       });
     if (newStatsError) {
       console.log("Team statistics update error:", newStatsError);
