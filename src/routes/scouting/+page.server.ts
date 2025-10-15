@@ -8,7 +8,6 @@ import {
 } from "./schema/schema.js";
 import type { Team } from "./schema/columns.js";
 import { fail } from "@sveltejs/kit";
-import { on } from "svelte/events";
 import { scoreAuton, scoreTeleop, scoreEndgame, computeRankingPoints } from "$lib/utils";
 
 export const load: PageServerLoad = async ({ url, locals: { supabase } }) => {
