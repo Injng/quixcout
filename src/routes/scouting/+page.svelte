@@ -34,7 +34,7 @@
             if (form.valid && form.message?.alertType == "success") {
                 toast.success("Submit successful!");
             } else {
-                toast.error("Submit failed!");
+                toast.error("Submit failed! Please check if all required fields are filled out.");
             }
         },
     });
