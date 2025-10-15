@@ -87,7 +87,7 @@ CREATE TABLE match_performances (
     auton_patterns INTEGER DEFAULT 0,
     -- TeleOp scoring
     teleop_classified_artifacts INTEGER DEFAULT 0,
-    teleop _overflow_artifacts INTEGER DEFAULT 0,
+    teleop_overflow_artifacts INTEGER DEFAULT 0,
     teleop_depot_artifacts INTEGER DEFAULT 0,
     teleop_patterns INTEGER DEFAULT 0,
     -- Endgame and overall
