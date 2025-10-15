@@ -430,6 +430,9 @@ export const actions: Actions = {
           event_location: venue,
           event_date: start,
           event_type: type,
+          movement_threshold: form.data.movement_threshold,
+          goal_threshold: form.data.goal_threshold,
+          pattern_threshold: form.data.pattern_threshold,
         },
       ])
       .select();

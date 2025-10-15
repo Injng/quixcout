@@ -29,6 +29,35 @@
         </Form.Control>
         <Form.FieldErrors />
     </Form.Field>
+    <div class="grid grid-cols-1 gap-3 mt-3">
+        <Form.Field {form} name="movement_threshold">
+            <Form.Control>
+                {#snippet children({ props })}
+                    <Form.Label>Movement RP Threshold</Form.Label>
+                    <Input type="number" {...props} bind:value={$formData.movement_threshold} />
+                {/snippet}
+            </Form.Control>
+            <Form.FieldErrors />
+        </Form.Field>
+        <Form.Field {form} name="goal_threshold">
+            <Form.Control>
+                {#snippet children({ props })}
+                    <Form.Label>Goal RP Threshold</Form.Label>
+                    <Input type="number" {...props} bind:value={$formData.goal_threshold} />
+                {/snippet}
+            </Form.Control>
+            <Form.FieldErrors />
+        </Form.Field>
+        <Form.Field {form} name="pattern_threshold">
+            <Form.Control>
+                {#snippet children({ props })}
+                    <Form.Label>Pattern RP Threshold</Form.Label>
+                    <Input type="number" {...props} bind:value={$formData.pattern_threshold} />
+                {/snippet}
+            </Form.Control>
+            <Form.FieldErrors />
+        </Form.Field>
+    </div>
     <Form.Button class="mt-5" disabled={$submitting}>
         {#if $submitting}
             <span class="spinner" aria-label="Loading"></span>

@@ -2,6 +2,9 @@ import { z } from "zod";
 
 export const eventFormSchema = z.object({
   event: z.string().max(50),
+  movement_threshold: z.number().int().default(16),
+  goal_threshold: z.number().int().default(36),
+  pattern_threshold: z.number().int().default(18),
 });
 
 export type EventFormSchema = typeof eventFormSchema;
