@@ -23,7 +23,6 @@
         <Select.Content>
           <Select.Item value="Partial Base">Partial Base</Select.Item>
           <Select.Item value="Full Base">Full Base</Select.Item>
-          <Select.Item value="Both Base">Both Base</Select.Item>
           <Select.Item value="None">None</Select.Item>
         </Select.Content>
       </Select.Root>
@@ -66,7 +65,7 @@
   <Form.Control>
     {#snippet children({ props })}
       <Form.Label>Overall Performance</Form.Label>
-      <Select.Root type="single" name={props.name} bind:value={$formData.overall_performance}>
+      <Select.Root type="single" name={props.name} bind:value={$formData.overall_performance as unknown as string | undefined}>
         <Select.Trigger { ...props } class="w-[180px] truncate"
           >{$formData.overall_performance}</Select.Trigger
         >

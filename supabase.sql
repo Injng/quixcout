@@ -113,6 +113,7 @@ CREATE TABLE team_statistics (
     average_total_classified_artifacts DECIMAL(10,2) DEFAULT 0,
     average_total_overflow_artifacts DECIMAL(10,2) DEFAULT 0,
     ranking_points INTEGER DEFAULT 0,
+    rp_updated BOOLEAN DEFAULT FALSE,
     PRIMARY KEY (team_id, event_id),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP

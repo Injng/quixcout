@@ -10,6 +10,7 @@ import ClassifiedArtifactsButton from "../sorting/ClassifiedArtifactsButton.svel
 import OverflowArtifactsButton from "../sorting/OverflowArtifactsButton.svelte";
 import RankingPointsButton from "../sorting/RankingPointsButton.svelte";
 import type { ColumnDef } from "@tanstack/table-core";
+import TeamCell from "../components/TeamCell.svelte";
 
 export type Team = {
   teamNumber: number;
@@ -23,6 +24,7 @@ export type Team = {
   totalClassifiedArtifactsAverage: number;
   totalOverflowArtifactsAverage: number;
   rankingPoints: number;
+  rpUpdated: boolean;
 };
 
 export const columns: ColumnDef<Team>[] = [
@@ -31,6 +33,12 @@ export const columns: ColumnDef<Team>[] = [
     header: ({ column }) =>
       renderComponent(TeamButton, {
         onclick: () => column.toggleSorting(column.getIsSorted() === "asc"),
+      }),
+    cell: ({ row }) =>
+      renderComponent(TeamCell, {
+        teamNumber: row.getValue("teamNumber") as number,
+        rpUpdated: (row.original as Team).rpUpdated,
+        matchesPlayed: (row.original as Team).matchesPlayed,
       }),
   },
   {

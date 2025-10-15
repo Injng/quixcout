@@ -61,7 +61,7 @@
             <Select.Root
                 type="single"
                 name={props.name}
-                bind:value={$formData.motif}
+                bind:value={$formData.motif as unknown as string | undefined}
             >
                 <Select.Trigger {...props} class="w-[180px] truncate">
                     {$formData.motif || "Select motif"}

@@ -47,7 +47,7 @@
     {@const result = content(context as any)}
     {#if result instanceof RenderComponentConfig}
         {@const { component: Component, props } = result}
-        <Component {...props} />
+        <Component {...props} team={team} bind:selected={selected} />
     {:else if result instanceof RenderSnippetConfig}
         {@const { snippet, params } = result}
         {@render snippet(params)}

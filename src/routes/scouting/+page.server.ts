@@ -9,6 +9,7 @@ import {
 import type { Team } from "./schema/columns.js";
 import { fail } from "@sveltejs/kit";
 import { on } from "svelte/events";
+import { scoreAuton, scoreTeleop, scoreEndgame, computeRankingPoints } from "$lib/utils";
 
 export const load: PageServerLoad = async ({ url, locals: { supabase } }) => {
   const selectedEvent = url.searchParams.get("event");
@@ -50,6 +51,7 @@ export const load: PageServerLoad = async ({ url, locals: { supabase } }) => {
       const avgTotalClassifiedArtifacts = team.average_total_classified_artifacts;
       const avgTotalOverflowArtifacts = team.average_total_overflow_artifacts;
       const rankingPoints = team.ranking_points;
+      const rpUpdated = team.rp_updated as boolean;
 
       // create the team object
       team_data.push({
@@ -64,6 +66,7 @@ export const load: PageServerLoad = async ({ url, locals: { supabase } }) => {
         totalClassifiedArtifactsAverage: avgTotalClassifiedArtifacts,
         totalOverflowArtifactsAverage: avgTotalOverflowArtifacts,
         rankingPoints: rankingPoints,
+        rpUpdated,
       });
     }
   }
@@ -249,37 +252,23 @@ export const actions: Actions = {
     }
 
     // calculate auton points
-    const autonClassifiedArtifactPoints = form.data.auton_classified_artifacts * 3;
-    const autonOverflowArtifactPoints = form.data.auton_overflow_artifacts * 1;
-    const autonPatternsPoints = form.data.auton_patterns * 2;
-    const autonLeavePoints = form.data.auton_leave ? 3 : 0;
-    const totalAutonPoints =
-      autonClassifiedArtifactPoints +
-      autonOverflowArtifactPoints +
-      autonPatternsPoints +
-      autonLeavePoints;
+    const totalAutonPoints = scoreAuton({
+      auton_classified_artifacts: form.data.auton_classified_artifacts,
+      auton_overflow_artifacts: form.data.auton_overflow_artifacts,
+      auton_patterns: form.data.auton_patterns,
+      auton_leave: form.data.auton_leave,
+    });
 
     // calculate teleop points
-    const teleopClassifiedArtifactPoints = form.data.teleop_classified_artifacts * 3;
-    const teleopOverflowArtifactPoints = form.data.teleop_overflow_artifacts * 1;
-    const teleopDepotArtifactPoints = form.data.teleop_depot_artifacts * 1;
-    const teleopPatternsPoints = form.data.teleop_patterns * 2;
-    const totalTeleopPoints =
-      teleopClassifiedArtifactPoints +
-      teleopOverflowArtifactPoints +
-      teleopDepotArtifactPoints +
-      teleopPatternsPoints;
+    const totalTeleopPoints = scoreTeleop({
+      teleop_classified_artifacts: form.data.teleop_classified_artifacts,
+      teleop_overflow_artifacts: form.data.teleop_overflow_artifacts,
+      teleop_depot_artifacts: form.data.teleop_depot_artifacts,
+      teleop_patterns: form.data.teleop_patterns,
+    });
 
     // calculate endgame points
-    let endgameBasePoints = 0;
-    if (form.data.endgame_location === "Partial Base") {
-      endgameBasePoints = 5;
-    } else if (form.data.endgame_location === "Full Base") {
-      endgameBasePoints = 10;
-    } else if (form.data.endgame_location === "Both Base") {
-      endgameBasePoints = 20;
-    }
-    const totalEndgamePoints = endgameBasePoints;
+    const endgameBasePoints = scoreEndgame(form.data.endgame_location);
 
     // get ranking point thresholds
     const { data: thresholds, error: thresholdsError } = await event.locals.supabase
@@ -293,14 +282,65 @@ export const actions: Actions = {
     }
     const { movement_threshold, goal_threshold, pattern_threshold } = thresholds;
 
-    // calculate ranking points
-    const totalScored = form.data.auton_classified_artifacts + form.data.auton_overflow_artifacts + form.data.teleop_classified_artifacts + form.data.teleop_overflow_artifacts + form.data.teleop_depot_artifacts;
-    const movementRP = autonLeavePoints + endgameBasePoints >= movement_threshold ? 1 : 0;
-    const goalRP = totalScored >= goal_threshold ? 1 : 0;
-    const patternRP = autonPatternsPoints + teleopPatternsPoints >= pattern_threshold ? 1 : 0;
-    const winRP = form.data.win ? 3 : 0;
-    const tieRP = form.data.tie ? 1 : 0;
-    const totalRP = movementRP + goalRP + patternRP + winRP + tieRP;
+    // get teammate from match_alliances table
+    const { data: teammateID, error: teammateIDError } = await event.locals.supabase
+      .from("match_alliances")
+      .select("*")
+      .eq("match_id", matchId)
+      .eq("alliance_color", form.data.alliance);
+    if (teammateIDError) {
+      console.log("Teammate fetch error:", teammateIDError);
+      return fail(500, { form, message: "Failed to get teammate" });
+    }
+
+    // if no teammate, don't calculate ranking points
+    let calcRP = true;
+    if (teammateID.length === 0) {
+      calcRP = false;
+    }
+
+    // get points scored by teammate in match
+    const { data: teammate, error: teammateError } = await event.locals.supabase
+      .from("match_performances")
+      .select("*")
+      .eq("match_id", matchId)
+      .eq("team_id", teammateID[0].team_id);
+    if (teammateError || !teammate) {
+      console.log("Teammate fetch error:", teammateError);
+      return fail(500, { form, message: "Failed to get teammate" });
+    }
+
+    let totalRP = 0
+    if (calcRP) {
+      const rp = computeRankingPoints({
+        self: {
+          auton_classified_artifacts: form.data.auton_classified_artifacts,
+          auton_overflow_artifacts: form.data.auton_overflow_artifacts,
+          auton_patterns: form.data.auton_patterns,
+          teleop_classified_artifacts: form.data.teleop_classified_artifacts,
+          teleop_overflow_artifacts: form.data.teleop_overflow_artifacts,
+          teleop_depot_artifacts: form.data.teleop_depot_artifacts,
+          teleop_patterns: form.data.teleop_patterns,
+          auton_leave: form.data.auton_leave,
+          endgame_location: form.data.endgame_location,
+          win: form.data.win,
+          tie: form.data.tie,
+        },
+        teammate: {
+          auton_classified_artifacts: teammate[0].auton_classified_artifacts,
+          auton_overflow_artifacts: teammate[0].auton_overflow_artifacts,
+          auton_patterns: teammate[0].auton_patterns,
+          teleop_classified_artifacts: teammate[0].teleop_classified_artifacts,
+          teleop_overflow_artifacts: teammate[0].teleop_overflow_artifacts,
+          teleop_depot_artifacts: teammate[0].teleop_depot_artifacts,
+          teleop_patterns: teammate[0].teleop_patterns,
+          auton_leave: teammate[0].auton_leave,
+          endgame_location: teammate[0].endgame_location,
+        },
+        thresholds: { movement_threshold, goal_threshold, pattern_threshold },
+      });
+      totalRP = rp.totalRP;
+    }
 
     // get current team statistics
     const { data: statistics, error: statisticsError } =
@@ -316,35 +356,35 @@ export const actions: Actions = {
 
     // calculate new averages
     const matchesPlayed = statistics[0].matches_played + 1;
-    const avgAuton =
+    let avgAuton =
       (statistics[0].average_auton_points * statistics[0].matches_played +
         totalAutonPoints) /
       matchesPlayed;
-    const avgTeleop =
+    let avgTeleop =
       (statistics[0].average_teleop_points * statistics[0].matches_played +
         totalTeleopPoints) /
       matchesPlayed;
-    const avgEndgame =
+    let avgEndgame =
       (statistics[0].average_endgame_points * statistics[0].matches_played +
-        totalEndgamePoints) /
+        endgameBasePoints) /
       matchesPlayed;
-    const avgTotalPatterns =
+    let avgTotalPatterns =
       (statistics[0].average_total_patterns * statistics[0].matches_played +
         form.data.auton_patterns + form.data.teleop_patterns) /
       matchesPlayed;
-    const avgTotalDepotArtifacts =
+    let avgTotalDepotArtifacts =
       (statistics[0].average_total_depot_artifacts * statistics[0].matches_played +
         form.data.teleop_depot_artifacts) /
       matchesPlayed;
-    const avgTotalClassifiedArtifacts =
+    let avgTotalClassifiedArtifacts =
       (statistics[0].average_total_classified_artifacts * statistics[0].matches_played +
         form.data.teleop_classified_artifacts + form.data.auton_classified_artifacts) /
       matchesPlayed;
-    const avgTotalOverflowArtifacts =
+    let avgTotalOverflowArtifacts =
       (statistics[0].average_total_overflow_artifacts * statistics[0].matches_played +
         form.data.teleop_overflow_artifacts + form.data.auton_overflow_artifacts) /
       matchesPlayed;
-    const rankingPoints = statistics[0].ranking_points + totalRP;
+    let rankingPoints = statistics[0].ranking_points + totalRP;
 
     // update team statistics table with new data
     const { error: newStatsError } = await event.locals.supabase
@@ -361,10 +401,27 @@ export const actions: Actions = {
         average_total_classified_artifacts: avgTotalClassifiedArtifacts,
         average_total_overflow_artifacts: avgTotalOverflowArtifacts,
         ranking_points: rankingPoints,
+        rp_updated: calcRP,
       });
     if (newStatsError) {
       console.log("Team statistics update error:", newStatsError);
       return fail(500, { form, message: "Failed to update team statistics" });
+    }
+
+    // update ranking points for teammate
+    if (calcRP) {
+      const { error: teammateStatsError } = await event.locals.supabase
+        .from("team_statistics")
+        .upsert({
+          team_id: teammate[0].team_id,
+          event_id: eventId,
+          ranking_points: rankingPoints,
+          rp_updated: true,
+        });
+      if (teammateStatsError) {
+        console.log("Teammate statistics update error:", teammateStatsError);
+        return fail(500, { form, message: "Failed to update teammate statistics" });
+      }
     }
 
     // return success message

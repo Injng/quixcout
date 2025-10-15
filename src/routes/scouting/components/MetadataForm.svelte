@@ -265,7 +265,7 @@
             <Select.Root
                 type="single"
                 name={props.name}
-                bind:value={$formData.consistent_at}
+                bind:value={$formData.consistent_at as unknown as string | undefined}
             >
                 <Select.Trigger {...props} class="w-[180px] truncate">
                     {$formData.consistent_at || "Select consistency"}
@@ -288,7 +288,7 @@
             <Select.Root
                 type="single"
                 name={props.name}
-                bind:value={$formData.game_strategy}
+                bind:value={$formData.game_strategy as unknown as string | undefined}
             >
                 <Select.Trigger {...props} class="w-[180px] truncate">
                     {$formData.game_strategy || "Select strategy"}
@@ -312,7 +312,7 @@
             <Select.Root
                 type="single"
                 name={props.name}
-                bind:value={$formData.artifact_strategy}
+                bind:value={$formData.artifact_strategy as unknown as string | undefined}
             >
                 <Select.Trigger {...props} class="w-[180px] truncate">
                     {$formData.artifact_strategy || "Select strategy"}
@@ -336,7 +336,7 @@
             <Select.Root
                 type="single"
                 name={props.name}
-                bind:value={$formData.intake_type}
+                bind:value={$formData.intake_type as unknown as string | undefined}
             >
                 <Select.Trigger {...props} class="w-[180px] truncate">
                     {$formData.intake_type || "Select intake type"}
@@ -361,7 +361,7 @@
             <Select.Root
                 type="single"
                 name={props.name}
-                bind:value={$formData.synergy}
+                bind:value={$formData.synergy as unknown as string | undefined}
             >
                 <Select.Trigger {...props} class="w-[180px] truncate">
                     {$formData.synergy || "Select synergy"}
