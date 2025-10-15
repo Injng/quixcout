@@ -22,7 +22,7 @@ export type Team = {
   totalDepotArtifactsAverage: number;
   totalClassifiedArtifactsAverage: number;
   totalOverflowArtifactsAverage: number;
-  rankingPointsAverage: number;
+  rankingPoints: number;
 };
 
 export const columns: ColumnDef<Team>[] = [

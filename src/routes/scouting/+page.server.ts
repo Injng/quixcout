@@ -49,7 +49,7 @@ export const load: PageServerLoad = async ({ url, locals: { supabase } }) => {
       const avgTotalDepotArtifacts = team.average_total_depot_artifacts;
       const avgTotalClassifiedArtifacts = team.average_total_classified_artifacts;
       const avgTotalOverflowArtifacts = team.average_total_overflow_artifacts;
-      const avgRankingPoints = team.ranking_points;
+      const rankingPoints = team.ranking_points;
 
       // create the team object
       team_data.push({
@@ -63,7 +63,7 @@ export const load: PageServerLoad = async ({ url, locals: { supabase } }) => {
         totalDepotArtifactsAverage: avgTotalDepotArtifacts,
         totalClassifiedArtifactsAverage: avgTotalClassifiedArtifacts,
         totalOverflowArtifactsAverage: avgTotalOverflowArtifacts,
-        rankingPointsAverage: avgRankingPoints,
+        rankingPoints: rankingPoints,
       });
     }
   }
