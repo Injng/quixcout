@@ -452,7 +452,7 @@ export const actions: Actions = {
 
     // get event data from FTCScout API
     let response = await fetch(
-      `https://api.ftcscout.org/rest/v1/events/2024/${form.data.event}`,
+      `https://api.ftcscout.org/rest/v1/events/2025/${form.data.event}`,
     );
     if (!response.ok) {
       console.log("Failed to fetch event data:", response.statusText);
@@ -465,7 +465,7 @@ export const actions: Actions = {
 
     // get team data from FTCScout API
     response = await fetch(
-      `https://api.ftcscout.org/rest/v1/events/2024/${form.data.event}/teams`,
+      `https://api.ftcscout.org/rest/v1/events/2025/${form.data.event}/teams`,
     );
     if (!response.ok) {
       console.log("Failed to fetch teams data:", response.statusText);
