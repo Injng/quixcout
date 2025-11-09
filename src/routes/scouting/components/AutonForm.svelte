@@ -10,11 +10,13 @@
     import type { Writable } from "svelte/store";
     import { rampSlots, type RampSlot } from "./rampStore";
 
-    export let form: FsSuperForm<Infer<ScoutingSchema>>;
-    export let formData: Writable<Infer<ScoutingSchema>>;
+    const { form, formData } = $props<{
+        form: FsSuperForm<Infer<ScoutingSchema>>;
+        formData: Writable<Infer<ScoutingSchema>>;
+    }>();
 
     // Ramp slots selection for classified artifacts (Green/Purple/None)
-    let prevClassified = 0;
+    let prevClassified = $formData.auton_classified_artifacts;
     function updateClassifiedCount() {
         $formData.auton_classified_artifacts = prevClassified + $rampSlots.filter((s) => s !== "N").length;
     }
@@ -42,16 +44,22 @@
     let patternCount = 0;
     function updatePatternCount() {
         patternCount = 0;
-        let currPattern = "";
-        for (let i = 0; i <= 6; i += 3) {
-            currPattern += $rampSlots[i] + $rampSlots[i + 1] + $rampSlots[i + 2];
-            if (currPattern == $formData.motif) {
+        for (let i = 0; i < 9; i++) {
+            if ($formData.motif && $rampSlots[i] == $formData.motif[i % 3]) {
                 patternCount++;
             }
-            currPattern = "";
         }
         $formData.auton_patterns = patternCount;
     }
+
+    // update pattern count when motif changes
+    let motif = $formData.motif;
+    $effect(() => {
+        if (motif !== $formData.motif) {
+            motif = $formData.motif;
+            updatePatternCount();
+        }
+    });
 </script>
 
 <Form.Field {form} name="motif">
@@ -86,10 +94,12 @@
                 <span class="px-2 py-1 rounded bg-zinc-100 dark:bg-zinc-800 text-sm">{$formData.auton_classified_artifacts ?? 0}</span>
                 <Button type="button" variant="secondary" size="sm" onclick={clearRamp}>Open Gate</Button>
             </div>
+            <input {...props} type="hidden" value={$formData.auton_classified_artifacts} />
             <div class="flex items-center mb-2 gap-2">
                 <span class="text-sm opacity-80">Pattern Count:</span>
                 <span class="px-2 py-1 rounded bg-zinc-100 dark:bg-zinc-800 text-sm">{$formData.auton_patterns}</span>
             </div>
+            <input type="hidden" name="auton_patterns" value={$formData.auton_patterns} />
             <div class="flex flex-wrap gap-3">
                 {#each $rampSlots as slot, i (i)}
                     <div class="flex flex-col items-center gap-2">

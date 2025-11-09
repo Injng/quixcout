@@ -9,11 +9,13 @@
     import { get } from "svelte/store";
     import { rampSlots as autonRampSlots } from "./rampStore";
 
-    export let form: FsSuperForm<Infer<ScoutingSchema>>;
-    export let formData: Writable<Infer<ScoutingSchema>>;
+    const { form, formData } = $props<{
+        form: FsSuperForm<Infer<ScoutingSchema>>;
+        formData: Writable<Infer<ScoutingSchema>>;
+    }>();
 
     // Ramp slots selection for classified artifacts (Green/Purple/None)
-    let rampSlots: ("N" | "G" | "P")[] = Array(9).fill("N");
+    let rampSlots = $state<("N" | "G" | "P")[]>(Array(9).fill("N"));
     let prevClassified = 0;
     function updateClassifiedCount() {
         $formData.teleop_classified_artifacts = prevClassified + rampSlots.filter((s) => s !== "N").length;
@@ -40,16 +42,13 @@
     }
 
     // Count patterns based on motif
-    let patternCount = $formData.auton_patterns;
+    let patternCount = 0;
     function updatePatternCount() {
         patternCount = 0;
-        let currPattern = "";
-        for (let i = 0; i <= 6; i += 3) {
-            currPattern += rampSlots[i] + rampSlots[i + 1] + rampSlots[i + 2];
-            if (currPattern == $formData.motif) {
+        for (let i = 0; i < 9; i++) {
+            if ($formData.motif && rampSlots[i] == $formData.motif[i % 3]) {
                 patternCount++;
             }
-            currPattern = "";
         }
         $formData.teleop_patterns = patternCount;
     }
@@ -65,10 +64,12 @@
                 <Button type="button" variant="secondary" size="sm" onclick={clearRamp}>Open Gate</Button>
                 <Button type="button" variant="secondary" size="sm" onclick={copyAutonRamp}>Copy Auton Ramp</Button>
             </div>
+            <input {...props} type="hidden" value={$formData.teleop_classified_artifacts} />
             <div class="flex items-center mb-2 gap-2">
                 <span class="text-sm opacity-80">Pattern Count:</span>
                 <span class="px-2 py-1 rounded bg-zinc-100 dark:bg-zinc-800 text-sm">{$formData.teleop_patterns}</span>
             </div>
+            <input type="hidden" name="teleop_patterns" value={$formData.teleop_patterns} />
             <div class="flex flex-wrap gap-3">
                 {#each rampSlots as slot, i (i)}
                     <div class="flex flex-col items-center gap-2">

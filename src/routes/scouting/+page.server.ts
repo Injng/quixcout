@@ -187,6 +187,7 @@ export const actions: Actions = {
       .from("match_alliances")
       .insert({
         match_id: matchId,
+        event_id: eventId,
         team_id: Number(form.data.team_id),
         alliance_color: form.data.alliance,
       });
@@ -286,7 +287,9 @@ export const actions: Actions = {
       .from("match_alliances")
       .select("*")
       .eq("match_id", matchId)
-      .eq("alliance_color", form.data.alliance);
+      .eq("alliance_color", form.data.alliance)
+      .eq("event_id", eventId)
+      .neq("team_id", form.data.team_id);
     if (teammateIDError) {
       console.log("Teammate fetch error:", teammateIDError);
       return fail(500, { form, message: "Failed to get teammate" });
@@ -294,23 +297,24 @@ export const actions: Actions = {
 
     // if no teammate, don't calculate ranking points
     let calcRP = true;
+    console.log("teammateID", teammateID);
     if (teammateID.length === 0) {
       calcRP = false;
     }
 
-    // get points scored by teammate in match
-    const { data: teammate, error: teammateError } = await event.locals.supabase
-      .from("match_performances")
-      .select("*")
-      .eq("match_id", matchId)
-      .eq("team_id", teammateID[0].team_id);
-    if (teammateError || !teammate) {
-      console.log("Teammate fetch error:", teammateError);
-      return fail(500, { form, message: "Failed to get teammate" });
-    }
-
     let totalRP = 0
     if (calcRP) {
+      // get points scored by teammate in match
+      const { data: teammate, error: teammateError } = await event.locals.supabase
+        .from("match_performances")
+        .select("*")
+        .eq("match_id", matchId)
+        .eq("team_id", teammateID[0].team_id);
+      if (teammateError || !teammate) {
+        console.log("Teammate fetch error:", teammateError);
+        return fail(500, { form, message: "Failed to get teammate" });
+      }
+
       const rp = computeRankingPoints({
         self: {
           auton_classified_artifacts: form.data.auton_classified_artifacts,
@@ -409,12 +413,25 @@ export const actions: Actions = {
 
     // update ranking points for teammate
     if (calcRP) {
+      // get teammate statistics
+      const { data: teammateStatistics, error: teammateStatisticsError } =
+        await event.locals.supabase
+          .from("team_statistics")
+          .select("*")
+          .eq("team_id", teammateID[0].team_id)
+          .eq("event_id", eventId);
+      if (teammateStatisticsError || !teammateStatistics || teammateStatistics.length === 0) {
+        console.log("Teammate statistics fetch error:", teammateStatisticsError);
+        return fail(500, { form, message: "Failed to get teammate statistics" });
+      }
+
+      // update teammate statistics
       const { error: teammateStatsError } = await event.locals.supabase
         .from("team_statistics")
         .upsert({
-          team_id: teammate[0].team_id,
+          team_id: teammateID[0].team_id,
           event_id: eventId,
-          ranking_points: rankingPoints,
+          ranking_points: teammateStatistics[0].ranking_points + totalRP,
           rp_updated: true,
         });
       if (teammateStatsError) {

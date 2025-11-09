@@ -68,6 +68,7 @@ CREATE TABLE matches (
 -- Alliance assignments for each match
 CREATE TABLE match_alliances (
     match_id INTEGER REFERENCES matches(match_id),
+    event_id VARCHAR(20) REFERENCES events(event_id),
     team_id INTEGER REFERENCES teams(team_id),
     alliance_color VARCHAR(10) NOT NULL CHECK (alliance_color IN ('red', 'blue')),
     PRIMARY KEY (match_id, team_id),
