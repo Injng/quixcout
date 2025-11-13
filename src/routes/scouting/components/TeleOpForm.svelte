@@ -59,7 +59,7 @@
         {#snippet children({ props })}
             <Form.Label>Auton Ramp</Form.Label>
             <div class="flex items-center mb-2 gap-2">
-                <span class="text-sm opacity-80">Classified Count:</span>
+                <span class="text-sm opacity-80">Classified (Scored) Count:</span>
                 <span class="px-2 py-1 rounded bg-zinc-100 dark:bg-zinc-800 text-sm">{$formData.teleop_classified_artifacts ?? 0}</span>
                 <Button type="button" variant="secondary" size="sm" onclick={clearRamp}>Open Gate</Button>
                 <Button type="button" variant="secondary" size="sm" onclick={copyAutonRamp}>Copy Auton Ramp</Button>
@@ -120,6 +120,7 @@
     <Form.Control>
         {#snippet children({ props })}
             <Form.Label>Teleop Depot Artifacts</Form.Label>
+			<Form.Description>(Pushed against the tower)</Form.Description>
             <div class="flex items-center">
                 <button
                     type="button"
